@@ -10,9 +10,15 @@ import {
 import {
   fetchCallReadOnlyFunction,
   cvToValue,
+  hexToCV,
   Cl,
 } from "@stacks/transactions";
-import { NETWORK, CONTRACT_ADDRESS, CONTRACT_NAME } from "./config";
+import {
+  NETWORK,
+  CONTRACT_ADDRESS,
+  CONTRACT_NAME,
+  API_BASE,
+} from "./config";
 
 // --- value coercion helpers (robust to clarity-value shape differences) ---
 const val = (x) => (x && typeof x === "object" && "value" in x ? x.value : x);
@@ -94,6 +100,35 @@ export async function getTotalPlays() {
 export async function getTop() {
   const t = await readOnly("get-top", []);
   return { player: addr(t.player), score: num(t.score) };
+}
+
+// Live activity feed, decoded from the contract's `print` events.
+export async function getRecentPlays(limit = 15) {
+  const id = `${CONTRACT_ADDRESS}.${CONTRACT_NAME}`;
+  const res = await fetch(
+    `${API_BASE}/extended/v1/contract/${id}/events?limit=${limit}&offset=0`,
+  );
+  if (!res.ok) throw new Error(`events ${res.status}`);
+  const data = await res.json();
+  const out = [];
+  for (const ev of data.results || []) {
+    const hex = ev?.contract_log?.value?.hex;
+    if (!hex) continue;
+    try {
+      const v = cvToValue(hexToCV(hex), true);
+      if ((val(v.event) ?? v.event) !== "play") continue;
+      out.push({
+        player: addr(v.player),
+        score: num(v.score),
+        streak: num(v.streak),
+        total: num(v.total),
+        txId: ev.tx_id,
+      });
+    } catch {
+      // skip events we can't decode
+    }
+  }
+  return out;
 }
 
 // Build the ranked leaderboard from the on-chain player registry.

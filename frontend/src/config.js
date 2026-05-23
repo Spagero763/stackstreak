@@ -9,6 +9,12 @@ export const CONTRACT_ADDRESS =
   env.VITE_CONTRACT_ADDRESS || "SP3JKFGFTQZSDYDRA4JSV0HST1D610WMR1G7K367T";
 export const CONTRACT_NAME = env.VITE_CONTRACT_NAME || "stackstreak";
 
+// Hiro API base for the configured network.
+export const API_BASE =
+  NETWORK === "mainnet"
+    ? "https://api.hiro.so"
+    : "https://api.testnet.hiro.so";
+
 // True once a contract address has been configured.
 export const IS_CONFIGURED = Boolean(CONTRACT_ADDRESS);
 
