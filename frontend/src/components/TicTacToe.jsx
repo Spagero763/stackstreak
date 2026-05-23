@@ -203,6 +203,8 @@ function statusText(game, address) {
 
 function readableError(e) {
   const msg = e?.message || String(e);
+  if (/NoSuchContract|could not find|not found|404/i.test(msg))
+    return "Tic-Tac-Toe isn't live yet — deploy the tictactoe contract to enable it.";
   if (/rejected|cancel/i.test(msg)) return "Request cancelled.";
   if (/no.*address|connect/i.test(msg)) return "Connect a Stacks wallet first.";
   if (/u201/.test(msg)) return "That game is no longer open.";
