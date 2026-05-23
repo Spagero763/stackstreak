@@ -8,8 +8,12 @@
   "exports": {
     ".": "./src/index.js"
   },
+  "bin": {
+    "stackstreak": "bin/cli.mjs"
+  },
   "files": [
     "src",
+    "bin",
     "README.md"
   ],
   "keywords": [
