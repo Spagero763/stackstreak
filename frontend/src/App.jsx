@@ -17,6 +17,7 @@ import {
   getStats,
   getLeaderboard,
   getTotalPlays,
+  getRecentPlays,
 } from "./stacks";
 
 const short = (a) => (a ? `${a.slice(0, 5)}…${a.slice(-4)}` : "");
@@ -25,6 +26,7 @@ export default function App() {
   const [address, setAddress] = useState(null);
   const [stats, setStats] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
+  const [recent, setRecent] = useState([]);
   const [totalPlays, setTotalPlays] = useState(0);
   const [lastTx, setLastTx] = useState(null);
   const [playing, setPlaying] = useState(false);
@@ -40,12 +42,14 @@ export default function App() {
     setLoading(true);
     setError(null);
     try {
-      const [board, total] = await Promise.all([
+      const [board, total, feed] = await Promise.all([
         getLeaderboard(25),
         getTotalPlays(),
+        getRecentPlays(15).catch(() => []),
       ]);
       setLeaderboard(board);
       setTotalPlays(total);
+      setRecent(feed);
       if (address) setStats(await getStats(address));
     } catch (e) {
       setError(readableError(e));
@@ -56,6 +60,12 @@ export default function App() {
 
   useEffect(() => {
     refresh();
+  }, [refresh]);
+
+  // Keep the board and feed feeling live.
+  useEffect(() => {
+    const t = setInterval(refresh, 25000);
+    return () => clearInterval(t);
   }, [refresh]);
 
   const onConnect = async () => {
@@ -148,11 +158,23 @@ export default function App() {
         </section>
 
         {stats && (
-          <section className="stats-grid">
-            <Stat label="Your score" value={stats.total} />
-            <Stat label="Streak" value={`${stats.streak}🔥`} />
-            <Stat label="Best roll" value={stats.best} />
-            <Stat label="Plays" value={stats.plays} />
+          <section className="stats-block">
+            <div className="stats-grid">
+              <Stat label="Your score" value={stats.total} />
+              <Stat label="Streak" value={`${stats.streak}🔥`} />
+              <Stat label="Best roll" value={stats.best} />
+              <Stat label="Plays" value={stats.plays} />
+            </div>
+            {stats.plays > 0 && (
+              <a
+                className="btn ghost share"
+                href={shareUrl(stats)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                𝕏  Share my streak
+              </a>
+            )}
           </section>
         )}
 
@@ -203,6 +225,27 @@ export default function App() {
             </table>
           )}
         </section>
+
+        <section className="feed">
+          <h2>Live plays</h2>
+          {recent.length === 0 ? (
+            <p className="empty">No plays yet — your roll will show up here.</p>
+          ) : (
+            <ul className="feed-list">
+              {recent.map((p, i) => (
+                <li key={`${p.txId}-${i}`}>
+                  <span className="mono">{short(p.player)}</span>
+                  <span>
+                    rolled <b className="strong">{p.score}</b>
+                  </span>
+                  <span className="muted">
+                    {p.streak}🔥 · {p.total} total
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       </main>
 
       <footer className="footer">
@@ -230,6 +273,14 @@ function Stat({ label, value }) {
 
 function medal(i) {
   return ["🥇", "🥈", "🥉"][i] ?? i + 1;
+}
+
+function shareUrl(stats) {
+  const text = `I'm climbing the ⚡ StackStreak leaderboard on Stacks — ${stats.total} pts, ${stats.streak}🔥 streak. Tap to play and beat me:`;
+  const url = typeof window !== "undefined" ? window.location.origin : "";
+  return `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+    text,
+  )}&url=${encodeURIComponent(url)}`;
 }
 
 function readableError(e) {
