@@ -1,0 +1,38 @@
+{
+  "name": "stackstreak-sdk",
+  "version": "0.1.0",
+  "description": "JavaScript SDK for the StackStreak and Tic-Tac-Toe on-chain games on Stacks (Bitcoin L2).",
+  "type": "module",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "keywords": [
+    "stacks",
+    "bitcoin",
+    "clarity",
+    "web3",
+    "game",
+    "sdk",
+    "stackstreak"
+  ],
+  "author": "spagero763",
+  "license": "MIT",
+  "homepage": "https://github.com/Spagero763/stackstreak",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Spagero763/stackstreak.git"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@stacks/network": "^7.3.1",
+    "@stacks/transactions": "^7.4.0"
+  }
+}
