@@ -17,6 +17,7 @@ import {
   NETWORK,
   CONTRACT_ADDRESS,
   CONTRACT_NAME,
+  TTT_CONTRACT_NAME,
   API_BASE,
 } from "./config";
 
@@ -48,28 +49,36 @@ export function disconnectWallet() {
   disconnect();
 }
 
-// --- write: play one round (one transaction) ---
-export async function play() {
+// --- generic contract helpers (work for any contract from the same deployer) ---
+async function callContract(contractName, functionName, functionArgs = []) {
   const res = await request("stx_callContract", {
-    contract: `${CONTRACT_ADDRESS}.${CONTRACT_NAME}`,
-    functionName: "play",
-    functionArgs: [],
+    contract: `${CONTRACT_ADDRESS}.${contractName}`,
+    functionName,
+    functionArgs,
     network: NETWORK,
   });
   return res.txid ?? res.txId ?? res;
 }
 
-// --- read-only ---
-async function readOnly(functionName, functionArgs = []) {
+async function readOnly(contractName, functionName, functionArgs = []) {
   const cv = await fetchCallReadOnlyFunction({
     contractAddress: CONTRACT_ADDRESS,
-    contractName: CONTRACT_NAME,
+    contractName,
     functionName,
     functionArgs,
     senderAddress: CONTRACT_ADDRESS,
     network: NETWORK,
   });
   return cvToValue(cv, true);
+}
+
+const asList = (x) =>
+  Array.isArray(x) ? x : Array.isArray(val(x)) ? val(x) : [];
+
+/* ===================== StackStreak (daily game) ===================== */
+
+export async function play() {
+  return callContract(CONTRACT_NAME, "play", []);
 }
 
 function normStats(t) {
@@ -84,21 +93,21 @@ function normStats(t) {
 }
 
 export async function getStats(address) {
-  const t = await readOnly("get-stats", [Cl.principal(address)]);
+  const t = await readOnly(CONTRACT_NAME, "get-stats", [Cl.principal(address)]);
   return normStats(t);
 }
 
 export async function getPlayers() {
-  const list = await readOnly("get-players", []);
-  return (Array.isArray(list) ? list : []).map(addr).filter(Boolean);
+  const players = await readOnly(CONTRACT_NAME, "get-players", []);
+  return asList(players).map(addr).filter(Boolean);
 }
 
 export async function getTotalPlays() {
-  return num(await readOnly("get-total-plays", []));
+  return num(await readOnly(CONTRACT_NAME, "get-total-plays", []));
 }
 
 export async function getTop() {
-  const t = await readOnly("get-top", []);
+  const t = await readOnly(CONTRACT_NAME, "get-top", []);
   return { player: addr(t.player), score: num(t.score) };
 }
 
@@ -140,4 +149,70 @@ export async function getLeaderboard(limit = 25) {
   );
   rows.sort((a, b) => b.total - a.total || b.best - a.best);
   return rows.slice(0, limit);
+}
+
+/* ===================== Tic-Tac-Toe ===================== */
+
+// Status codes mirror the contract.
+export const TTT_STATUS = {
+  OPEN: 0,
+  ACTIVE: 1,
+  X_WON: 2,
+  O_WON: 3,
+  DRAW: 4,
+};
+
+function normGame(t, id) {
+  return {
+    id,
+    playerX: addr(t["player-x"]),
+    playerO: addr(t["player-o"]),
+    board: asList(t.board).map(num),
+    turn: num(t.turn), // 1 = X to move, 2 = O to move
+    status: num(t.status),
+    winner: addr(t.winner),
+    createdAt: num(t["created-at"]),
+  };
+}
+
+export async function createGame() {
+  return callContract(TTT_CONTRACT_NAME, "create-game", []);
+}
+
+export async function joinGame(id) {
+  return callContract(TTT_CONTRACT_NAME, "join-game", [Cl.uint(id)]);
+}
+
+export async function playMove(id, pos) {
+  return callContract(TTT_CONTRACT_NAME, "play-move", [
+    Cl.uint(id),
+    Cl.uint(pos),
+  ]);
+}
+
+export async function getGameCount() {
+  return num(await readOnly(TTT_CONTRACT_NAME, "get-game-count", []));
+}
+
+export async function getGame(id) {
+  const raw = await readOnly(TTT_CONTRACT_NAME, "get-game", [Cl.uint(id)]);
+  const t = raw && raw.value ? raw.value : raw;
+  if (!t || !t["player-x"]) return null;
+  return normGame(t, id);
+}
+
+export async function getTttRecord(address) {
+  const r = await readOnly(TTT_CONTRACT_NAME, "get-record", [
+    Cl.principal(address),
+  ]);
+  return { wins: num(r.wins), losses: num(r.losses), draws: num(r.draws) };
+}
+
+// Recent games, newest first.
+export async function getRecentGames(limit = 12) {
+  const count = await getGameCount();
+  const ids = [];
+  for (let i = count; i > 0 && ids.length < limit; i--) ids.push(i);
+  const games = await Promise.all(ids.map((i) => getGame(i).catch(() => null)));
+  return games.filter(Boolean);
 }
