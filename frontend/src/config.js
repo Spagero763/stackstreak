@@ -2,8 +2,11 @@
 const env = import.meta.env;
 
 export const APP_NAME = "StackStreak";
-export const NETWORK = env.VITE_NETWORK || "testnet";
-export const CONTRACT_ADDRESS = env.VITE_CONTRACT_ADDRESS || "";
+// Defaults point at the live mainnet deployment (a public on-chain address,
+// not a secret). Override per-environment via Vite env vars if needed.
+export const NETWORK = env.VITE_NETWORK || "mainnet";
+export const CONTRACT_ADDRESS =
+  env.VITE_CONTRACT_ADDRESS || "SP3JKFGFTQZSDYDRA4JSV0HST1D610WMR1G7K367T";
 export const CONTRACT_NAME = env.VITE_CONTRACT_NAME || "stackstreak";
 
 // True once a contract address has been configured.
