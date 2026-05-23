@@ -313,6 +313,147 @@ code {
   font-size: 13px;
 }
 
+/* game tabs */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin: 4px 0 20px;
+  border-bottom: 1px solid var(--line);
+}
+.tab {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 700;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.tab:hover {
+  color: var(--text);
+}
+.tab.active {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+
+/* tic-tac-toe */
+.ttt-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 18px 0;
+}
+.record {
+  color: var(--muted);
+  font-size: 14px;
+}
+.record b {
+  color: var(--text);
+}
+.ttt-active {
+  margin: 18px 0 8px;
+  padding: 20px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+.ttt-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.ttt-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  max-width: 320px;
+  margin: 0 auto;
+}
+.ttt-cell {
+  aspect-ratio: 1 / 1;
+  font-size: 40px;
+  font-weight: 800;
+  color: var(--text);
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s ease, transform 0.05s ease;
+}
+.ttt-cell:not(:disabled):hover {
+  background: #262c3d;
+}
+.ttt-cell:not(:disabled):active {
+  transform: scale(0.97);
+}
+.ttt-cell:disabled {
+  cursor: default;
+}
+.ttt-cell.filled {
+  color: var(--accent-2);
+}
+.ttt-players {
+  display: flex;
+  justify-content: space-between;
+  max-width: 320px;
+  margin: 16px auto 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* game list */
+.game-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.game-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 4px 12px 4px 4px;
+}
+.game-list li.me {
+  border-color: rgba(252, 100, 50, 0.4);
+}
+.game-open {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: none;
+  border: none;
+  color: var(--text);
+  text-align: left;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  flex-wrap: wrap;
+}
+.game-open .muted {
+  color: var(--muted);
+  font-size: 13px;
+  margin-left: auto;
+}
+
 /* footer */
 .footer {
   margin: 36px 0 16px;
