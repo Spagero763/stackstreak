@@ -8,14 +8,18 @@ your score, your daily streak, and your spot on the global leaderboard update
 instantly. No wagering, no house, no admin keys. **Every play is one
 transaction.**
 
+**▶ Play:** https://stackstreak-nine.vercel.app · also includes on-chain **Tic-Tac-Toe**.
+
 ---
 
 ## How it works
 
 | Piece | What it does |
 |-------|--------------|
-| `contracts/stackstreak.clar` | The whole game: `play`, per-player stats, daily streaks, an on-chain leaderboard registry, and a champion tracker. |
-| `frontend/` | A React + Vite app using `@stacks/connect` (wallet + transactions) and `@stacks/transactions` (read-only calls). |
+| `contracts/stackstreak.clar` | Daily game: `play`, per-player stats, streaks, leaderboard registry, champion tracker. |
+| `contracts/tictactoe.clar` | PvP Tic-Tac-Toe: `create-game`, `join-game`, `play-move`, win/draw detection, records. |
+| `frontend/` | React + Vite multi-game app using `@stacks/connect` + `@stacks/transactions`. |
+| `sdk/` | [`stackstreak-sdk`](sdk/README.md) — npm package (reads + signed writes) and a `stackstreak` CLI. |
 
 ### The roll is provably fair
 Each play hashes a tuple of `{ your address, burn-block-height, stacks-block-height, your play number }`
