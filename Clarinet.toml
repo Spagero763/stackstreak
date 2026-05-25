@@ -5,6 +5,26 @@ authors = []
 telemetry = false
 cache_dir = '.\.cache'
 requirements = []
+[contracts.coinflip]
+path = 'contracts/coinflip.clar'
+clarity_version = 3
+epoch = 'latest'
+
+[contracts.connectfour]
+path = 'contracts/connectfour.clar'
+clarity_version = 3
+epoch = 'latest'
+
+[contracts.hilo]
+path = 'contracts/hilo.clar'
+clarity_version = 3
+epoch = 'latest'
+
+[contracts.rps]
+path = 'contracts/rps.clar'
+clarity_version = 3
+epoch = 'latest'
+
 [contracts.stackstreak]
 path = 'contracts/stackstreak.clar'
 clarity_version = 3
