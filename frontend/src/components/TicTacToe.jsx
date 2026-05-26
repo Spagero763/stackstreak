@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { explorerTx } from "../config";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   createGame,
   joinGame,
@@ -9,9 +9,22 @@ import {
   getTttRecord,
   TTT_STATUS,
 } from "../stacks";
+import { readableError, short } from "./util";
+import { Hero, TxHint } from "./shared.jsx";
 
-const short = (a) => (a ? `${a.slice(0, 5)}…${a.slice(-4)}` : "—");
 const MARK = ["", "✕", "◯"];
+
+// All 8 winning lines on a 3x3 board, used to highlight a winning row.
+const LINES = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6],
+];
 
 export default function TicTacToe({ address, onConnect }) {
   const [games, setGames] = useState([]);
@@ -32,7 +45,7 @@ export default function TicTacToe({ address, onConnect }) {
       if (activeId) setGame(await getGame(activeId));
       if (address) setRecord(await getTttRecord(address));
     } catch (e) {
-      setError(readableError(e));
+      setError(readableError(e, "Tic-Tac-Toe"));
     } finally {
       setLoading(false);
     }
@@ -41,7 +54,6 @@ export default function TicTacToe({ address, onConnect }) {
   useEffect(() => {
     refresh();
   }, [refresh]);
-
   useEffect(() => {
     const t = setInterval(refresh, 15000);
     return () => clearInterval(t);
@@ -52,11 +64,10 @@ export default function TicTacToe({ address, onConnect }) {
     setError(null);
     setBusy(true);
     try {
-      const txid = await fn();
-      setLastTx(txid);
-      setTimeout(refresh, 12000);
+      setLastTx(await fn());
+      setTimeout(refresh, 11000);
     } catch (e) {
-      setError(readableError(e));
+      setError(readableError(e, "Tic-Tac-Toe"));
     } finally {
       setBusy(false);
     }
@@ -71,15 +82,15 @@ export default function TicTacToe({ address, onConnect }) {
     withTx(() => playMove(game.id, pos));
   };
 
+  const winLine = game ? findWinLine(game.board) : null;
+
   return (
     <>
-      <section className="hero">
-        <h1>On-chain Tic-Tac-Toe.</h1>
-        <p className="sub">
-          Open a game or join an opponent. Every move is a transaction the
-          contract validates — turns, wins and draws, all on Stacks.
-        </p>
-      </section>
+      <Hero
+        emoji="⭕"
+        title="On-chain Tic-Tac-Toe"
+        sub="Open a game or join an opponent. Every move is a transaction the contract validates — turns, wins and draws, all on Stacks."
+      />
 
       {error && <div className="banner error">{error}</div>}
 
@@ -98,20 +109,20 @@ export default function TicTacToe({ address, onConnect }) {
         </button>
       </section>
 
-      {lastTx && (
-        <p className="hint">
-          Move submitted!{" "}
-          <a href={explorerTx(lastTx)} target="_blank" rel="noreferrer">
-            View transaction ↗
-          </a>{" "}
-          — the board updates when it confirms.
-        </p>
-      )}
+      <TxHint txid={lastTx} label="Move submitted!" />
 
       {game && (
-        <section className="ttt-active">
+        <motion.section
+          className="ttt-active"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
           <div className="ttt-status">
-            <button className="btn ghost tiny" onClick={() => setActiveId(null)}>
+            <button
+              className="btn ghost tiny"
+              onClick={() => setActiveId(null)}
+            >
               ← Back
             </button>
             <span>Game #{game.id}</span>
@@ -121,7 +132,9 @@ export default function TicTacToe({ address, onConnect }) {
             {game.board.map((c, i) => (
               <button
                 key={i}
-                className={`ttt-cell ${c ? "filled" : ""}`}
+                className={`ttt-cell ${c ? "filled" : ""} ${
+                  winLine && winLine.includes(i) ? "win" : ""
+                }`}
                 onClick={() => onCell(i)}
                 disabled={
                   busy ||
@@ -130,7 +143,22 @@ export default function TicTacToe({ address, onConnect }) {
                   !isMyTurn(game, address)
                 }
               >
-                {MARK[c]}
+                <AnimatePresence>
+                  {c !== 0 && (
+                    <motion.span
+                      key={c}
+                      initial={{ scale: 0, rotate: -120, opacity: 0 }}
+                      animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 320,
+                        damping: 18,
+                      }}
+                    >
+                      {MARK[c]}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </button>
             ))}
           </div>
@@ -138,7 +166,7 @@ export default function TicTacToe({ address, onConnect }) {
             <span>✕ {short(game.playerX)}</span>
             <span>◯ {game.playerO ? short(game.playerO) : "waiting…"}</span>
           </div>
-        </section>
+        </motion.section>
       )}
 
       <section className="board">
@@ -151,7 +179,10 @@ export default function TicTacToe({ address, onConnect }) {
           <ul className="game-list">
             {games.map((g) => (
               <li key={g.id} className={g.id === activeId ? "me" : ""}>
-                <button className="game-open" onClick={() => setActiveId(g.id)}>
+                <button
+                  className="game-open"
+                  onClick={() => setActiveId(g.id)}
+                >
                   <span className="mono">#{g.id}</span>
                   <span>
                     ✕ {short(g.playerX)} vs ◯{" "}
@@ -177,6 +208,14 @@ export default function TicTacToe({ address, onConnect }) {
   );
 }
 
+function findWinLine(board) {
+  for (const line of LINES) {
+    const [a, b, c] = line;
+    if (board[a] && board[a] === board[b] && board[a] === board[c]) return line;
+  }
+  return null;
+}
+
 function isMyTurn(game, address) {
   if (!address || game.status !== TTT_STATUS.ACTIVE) return false;
   return game.turn === 1 ? game.playerX === address : game.playerO === address;
@@ -199,16 +238,4 @@ function statusText(game, address) {
     default:
       return "";
   }
-}
-
-function readableError(e) {
-  const msg = e?.message || String(e);
-  if (/NoSuchContract|could not find|not found|404/i.test(msg))
-    return "Tic-Tac-Toe isn't live yet — deploy the tictactoe contract to enable it.";
-  if (/rejected|cancel/i.test(msg)) return "Request cancelled.";
-  if (/no.*address|connect/i.test(msg)) return "Connect a Stacks wallet first.";
-  if (/u201/.test(msg)) return "That game is no longer open.";
-  if (/u204/.test(msg)) return "It's not your turn.";
-  if (/u205/.test(msg)) return "That cell is taken.";
-  return msg;
 }

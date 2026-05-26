@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { explorerTx } from "../config";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   c4Create,
   c4Join,
@@ -7,16 +7,18 @@ import {
   getC4Game,
   getC4RecentGames,
   getC4Record,
+  getRecentC4,
   TTT_STATUS as STATUS,
 } from "../stacks";
-import { short, readableError } from "./util";
+import { readableError, short } from "./util";
+import { FeedList, Hero, TxHint } from "./shared.jsx";
 
-const DISC = ["", "🔴", "🟡"];
 const ROWS = [5, 4, 3, 2, 1, 0]; // render top-to-bottom
 const COLS = [0, 1, 2, 3, 4, 5, 6];
 
 export default function ConnectFour({ address, onConnect }) {
   const [games, setGames] = useState([]);
+  const [feed, setFeed] = useState([]);
   const [activeId, setActiveId] = useState(null);
   const [game, setGame] = useState(null);
   const [record, setRecord] = useState(null);
@@ -29,7 +31,12 @@ export default function ConnectFour({ address, onConnect }) {
     setLoading(true);
     setError(null);
     try {
-      setGames(await getC4RecentGames(12));
+      const [list, evs] = await Promise.all([
+        getC4RecentGames(12),
+        getRecentC4(15).catch(() => []),
+      ]);
+      setGames(list);
+      setFeed(evs);
       if (activeId) setGame(await getC4Game(activeId));
       if (address) setRecord(await getC4Record(address));
     } catch (e) {
@@ -53,7 +60,7 @@ export default function ConnectFour({ address, onConnect }) {
     setBusy(true);
     try {
       setLastTx(await fn());
-      setTimeout(refresh, 12000);
+      setTimeout(refresh, 11000);
     } catch (e) {
       setError(readableError(e, "Connect Four"));
     } finally {
@@ -69,18 +76,20 @@ export default function ConnectFour({ address, onConnect }) {
 
   return (
     <>
-      <section className="hero">
-        <h1>Connect Four 🔴🟡</h1>
-        <p className="sub">
-          Open a game or join one, then drop discs into columns. First to line
-          up four in any direction wins. Every move is a transaction.
-        </p>
-      </section>
+      <Hero
+        emoji="🔴"
+        title="Connect Four"
+        sub="Open a game or join one, then drop discs into columns. First to line up four in any direction wins. Every move is a transaction."
+      />
 
       {error && <div className="banner error">{error}</div>}
 
       <section className="ttt-bar">
-        <button className="btn" onClick={() => withTx(() => c4Create())} disabled={busy}>
+        <button
+          className="btn"
+          onClick={() => withTx(() => c4Create())}
+          disabled={busy}
+        >
           {busy ? "Confirm in wallet…" : "＋ New game"}
         </button>
         {record && (
@@ -94,51 +103,31 @@ export default function ConnectFour({ address, onConnect }) {
         </button>
       </section>
 
-      {lastTx && (
-        <p className="hint">
-          Move submitted!{" "}
-          <a href={explorerTx(lastTx)} target="_blank" rel="noreferrer">
-            View transaction ↗
-          </a>
-        </p>
-      )}
+      <TxHint txid={lastTx} label="Move submitted!" />
 
       {game && (
-        <section className="ttt-active">
+        <motion.section
+          className="ttt-active"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
           <div className="ttt-status">
-            <button className="btn ghost tiny" onClick={() => setActiveId(null)}>
+            <button
+              className="btn ghost tiny"
+              onClick={() => setActiveId(null)}
+            >
               ← Back
             </button>
             <span>Game #{game.id}</span>
             <span className="strong">{statusText(game, address)}</span>
           </div>
-          <div className="c4-board">
-            {ROWS.map((r) =>
-              COLS.map((c) => {
-                const v = game.board[r * 7 + c];
-                return (
-                  <button
-                    key={`${r}-${c}`}
-                    className="c4-cell"
-                    onClick={() => onDrop(c)}
-                    disabled={
-                      busy ||
-                      game.status !== STATUS.ACTIVE ||
-                      !isMyTurn(game, address) ||
-                      game.board[5 * 7 + c] !== 0
-                    }
-                  >
-                    {DISC[v]}
-                  </button>
-                );
-              }),
-            )}
-          </div>
+          <Board game={game} onDrop={onDrop} busy={busy} address={address} />
           <div className="ttt-players">
             <span>🔴 {short(game.playerX)}</span>
             <span>🟡 {game.playerO ? short(game.playerO) : "waiting…"}</span>
           </div>
-        </section>
+        </motion.section>
       )}
 
       <section className="board">
@@ -151,7 +140,10 @@ export default function ConnectFour({ address, onConnect }) {
           <ul className="game-list">
             {games.map((g) => (
               <li key={g.id} className={g.id === activeId ? "me" : ""}>
-                <button className="game-open" onClick={() => setActiveId(g.id)}>
+                <button
+                  className="game-open"
+                  onClick={() => setActiveId(g.id)}
+                >
                   <span className="mono">#{g.id}</span>
                   <span>
                     🔴 {short(g.playerX)} vs 🟡{" "}
@@ -173,7 +165,74 @@ export default function ConnectFour({ address, onConnect }) {
           </ul>
         )}
       </section>
+
+      <FeedList
+        title="Live drops"
+        items={feed}
+        pulse
+        emptyText="No drops yet."
+        renderRow={(d) => (
+          <>
+            <span className="mono">#{d.id || "?"}</span>
+            <span>
+              {d.event === "create"
+                ? "game opened"
+                : d.event === "join"
+                  ? "joined"
+                  : d.event === "drop"
+                    ? `dropped col ${d.col} (${d.mark === 1 ? "🔴" : "🟡"})`
+                    : d.event}
+            </span>
+            <span className="muted mono">{short(d.player)}</span>
+          </>
+        )}
+      />
     </>
+  );
+}
+
+function Board({ game, onDrop, busy, address }) {
+  return (
+    <div className="c4-board">
+      {ROWS.map((r) =>
+        COLS.map((c) => {
+          const v = game.board[r * 7 + c];
+          const colFull = game.board[5 * 7 + c] !== 0;
+          const disabled =
+            busy ||
+            game.status !== STATUS.ACTIVE ||
+            !isMyTurn(game, address) ||
+            colFull;
+          return (
+            <button
+              key={`${r}-${c}`}
+              className="c4-cell"
+              onClick={() => onDrop(c)}
+              disabled={disabled}
+            >
+              <AnimatePresence>
+                {v !== 0 && (
+                  <motion.span
+                    key={v}
+                    className={`c4-cell-inner ${
+                      v === 1 ? "c4-disc-red" : "c4-disc-yellow"
+                    }`}
+                    initial={{ y: -240, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 280,
+                      damping: 18,
+                      bounce: 0.5,
+                    }}
+                  />
+                )}
+              </AnimatePresence>
+            </button>
+          );
+        }),
+      )}
+    </div>
   );
 }
 

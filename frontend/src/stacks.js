@@ -221,6 +221,34 @@ export async function getRecentGames(limit = 12) {
   return games.filter(Boolean);
 }
 
+/* ===================== Generic event feed ===================== */
+
+// Pulls decoded `print` events from any of our contracts, newest-first.
+// Each game then shapes the raw tuple into something its UI can render.
+async function getEventTuples(contractName, limit = 20) {
+  const id = `${CONTRACT_ADDRESS}.${contractName}`;
+  const res = await fetch(
+    `${API_BASE}/extended/v1/contract/${id}/events?limit=${limit}&offset=0`,
+  );
+  if (!res.ok) throw new Error(`events ${res.status}`);
+  const data = await res.json();
+  const out = [];
+  for (const ev of data.results || []) {
+    const hex = ev?.contract_log?.value?.hex;
+    if (!hex) continue;
+    try {
+      const v = cvToValue(hexToCV(hex), true);
+      out.push({ ...v, txId: ev.tx_id });
+    } catch {
+      /* skip */
+    }
+  }
+  return out;
+}
+
+const evName = (v) => val(v.event) ?? v.event;
+const bool = (x) => val(x) === true || val(x) === "true";
+
 /* ===================== Coin Flip ===================== */
 
 export async function coinFlip(guess) {
@@ -237,6 +265,22 @@ export async function getCoinStats(address) {
     streak: num(t.streak),
     bestStreak: num(t["best-streak"]),
   };
+}
+export async function getCoinTop() {
+  const t = await readOnly(COINFLIP_CONTRACT_NAME, "get-top", []);
+  return { player: addr(t.player), streak: num(t.streak) };
+}
+export async function getRecentFlips(limit = 15) {
+  return (await getEventTuples(COINFLIP_CONTRACT_NAME, limit))
+    .filter((v) => evName(v) === "flip")
+    .map((v) => ({
+      player: addr(v.player),
+      guess: num(v.guess),
+      result: num(v.result),
+      won: bool(v.won),
+      streak: num(v.streak),
+      txId: v.txId,
+    }));
 }
 
 /* ===================== Rock-Paper-Scissors ===================== */
@@ -257,6 +301,21 @@ export async function getRpsStats(address) {
     bestStreak: num(t["best-streak"]),
   };
 }
+export async function getRpsTop() {
+  const t = await readOnly(RPS_CONTRACT_NAME, "get-top", []);
+  return { player: addr(t.player), streak: num(t.streak) };
+}
+export async function getRecentRps(limit = 15) {
+  return (await getEventTuples(RPS_CONTRACT_NAME, limit))
+    .filter((v) => evName(v) === "play")
+    .map((v) => ({
+      player: addr(v.player),
+      move: num(v.move),
+      house: num(v.house),
+      outcome: num(v.outcome),
+      txId: v.txId,
+    }));
+}
 
 /* ===================== Higher or Lower ===================== */
 
@@ -275,8 +334,25 @@ export async function getHiloState(address) {
     run: num(t.run),
     bestRun: num(t["best-run"]),
     plays: num(t.plays),
-    active: val(t.active) === true || val(t.active) === "true",
+    active: bool(t.active),
   };
+}
+export async function getHiloTop() {
+  const t = await readOnly(HILO_CONTRACT_NAME, "get-top", []);
+  return { player: addr(t.player), run: num(t.run) };
+}
+export async function getRecentHilo(limit = 15) {
+  return (await getEventTuples(HILO_CONTRACT_NAME, limit)).map((v) => ({
+    event: evName(v),
+    player: addr(v.player),
+    higher: bool(v.higher),
+    prev: num(v.prev),
+    next: num(v.next),
+    current: num(v.current),
+    correct: bool(v.correct),
+    run: num(v.run),
+    txId: v.txId,
+  }));
 }
 
 /* ===================== Connect Four ===================== */
@@ -313,4 +389,16 @@ export async function getC4RecentGames(limit = 12) {
     ids.map((i) => getC4Game(i).catch(() => null)),
   );
   return games.filter(Boolean);
+}
+export async function getRecentC4(limit = 15) {
+  return (await getEventTuples(C4_CONTRACT_NAME, limit)).map((v) => ({
+    event: evName(v),
+    id: num(v.id),
+    col: num(v.col),
+    row: num(v.row),
+    mark: num(v.mark),
+    status: num(v.status),
+    player: addr(v.player) || addr(v["player-x"]) || addr(v["player-o"]),
+    txId: v.txId,
+  }));
 }
