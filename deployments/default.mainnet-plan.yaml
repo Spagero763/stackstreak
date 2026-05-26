@@ -11,35 +11,35 @@ plan:
         - contract-publish:
             contract-name: coinflip
             expected-sender: SP3JKFGFTQZSDYDRA4JSV0HST1D610WMR1G7K367T
-            cost: 959900
+            cost: 24980
             path: "contracts\\coinflip.clar"
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
             contract-name: connectfour
             expected-sender: SP3JKFGFTQZSDYDRA4JSV0HST1D610WMR1G7K367T
-            cost: 961038
+            cost: 83830
             path: "contracts\\connectfour.clar"
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
             contract-name: hilo
             expected-sender: SP3JKFGFTQZSDYDRA4JSV0HST1D610WMR1G7K367T
-            cost: 960057
+            cost: 32360
             path: "contracts\\hilo.clar"
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
             contract-name: rps
             expected-sender: SP3JKFGFTQZSDYDRA4JSV0HST1D610WMR1G7K367T
-            cost: 959979
+            cost: 27560
             path: "contracts\\rps.clar"
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
             contract-name: tictactoe
             expected-sender: SP3JKFGFTQZSDYDRA4JSV0HST1D610WMR1G7K367T
-            cost: 960528
+            cost: 58570
             path: "contracts\\tictactoe.clar"
             anchor-block-only: true
             clarity-version: 3
