@@ -1,7 +1,12 @@
 # stackstreak-sdk
 
 JavaScript SDK for the [StackStreak](https://github.com/Spagero763/stackstreak)
-and Tic-Tac-Toe on-chain games on [Stacks](https://www.stacks.co/) (Bitcoin L2).
+on-chain game hub on [Stacks](https://www.stacks.co/) (Bitcoin L2).
+
+The platform now ships **six games**: Daily Streak, Tic-Tac-Toe, Coin Flip,
+Rock-Paper-Scissors, Higher-or-Lower, and Connect Four. This SDK currently
+wraps the first two; helpers for the other four are next on the roadmap
+(see the front-end `stacks.js` if you need them today).
 
 Reads run anywhere (browser or Node). Signed write helpers require a private
 key, so use them only with a wallet **you** control (a CLI or backend you run).
