@@ -8,8 +8,12 @@ export const NETWORK = env.VITE_NETWORK || "mainnet";
 export const CONTRACT_ADDRESS =
   env.VITE_CONTRACT_ADDRESS || "SP3JKFGFTQZSDYDRA4JSV0HST1D610WMR1G7K367T";
 export const CONTRACT_NAME = env.VITE_CONTRACT_NAME || "stackstreak";
-// Tic-Tac-Toe is deployed from the same wallet, so it shares CONTRACT_ADDRESS.
+// All games are deployed from the same wallet, so they share CONTRACT_ADDRESS.
 export const TTT_CONTRACT_NAME = env.VITE_TTT_CONTRACT_NAME || "tictactoe";
+export const COINFLIP_CONTRACT_NAME = "coinflip";
+export const RPS_CONTRACT_NAME = "rps";
+export const HILO_CONTRACT_NAME = "hilo";
+export const C4_CONTRACT_NAME = "connectfour";
 
 // Hiro API base for the configured network.
 export const API_BASE =

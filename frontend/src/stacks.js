@@ -18,6 +18,10 @@ import {
   CONTRACT_ADDRESS,
   CONTRACT_NAME,
   TTT_CONTRACT_NAME,
+  COINFLIP_CONTRACT_NAME,
+  RPS_CONTRACT_NAME,
+  HILO_CONTRACT_NAME,
+  C4_CONTRACT_NAME,
   API_BASE,
 } from "./config";
 
@@ -214,5 +218,99 @@ export async function getRecentGames(limit = 12) {
   const ids = [];
   for (let i = count; i > 0 && ids.length < limit; i--) ids.push(i);
   const games = await Promise.all(ids.map((i) => getGame(i).catch(() => null)));
+  return games.filter(Boolean);
+}
+
+/* ===================== Coin Flip ===================== */
+
+export async function coinFlip(guess) {
+  return callContract(COINFLIP_CONTRACT_NAME, "flip", [Cl.uint(guess)]);
+}
+export async function getCoinStats(address) {
+  const t = await readOnly(COINFLIP_CONTRACT_NAME, "get-stats", [
+    Cl.principal(address),
+  ]);
+  return {
+    flips: num(t.flips),
+    wins: num(t.wins),
+    losses: num(t.losses),
+    streak: num(t.streak),
+    bestStreak: num(t["best-streak"]),
+  };
+}
+
+/* ===================== Rock-Paper-Scissors ===================== */
+
+export async function rpsPlay(move) {
+  return callContract(RPS_CONTRACT_NAME, "play", [Cl.uint(move)]);
+}
+export async function getRpsStats(address) {
+  const t = await readOnly(RPS_CONTRACT_NAME, "get-stats", [
+    Cl.principal(address),
+  ]);
+  return {
+    plays: num(t.plays),
+    wins: num(t.wins),
+    losses: num(t.losses),
+    draws: num(t.draws),
+    streak: num(t.streak),
+    bestStreak: num(t["best-streak"]),
+  };
+}
+
+/* ===================== Higher or Lower ===================== */
+
+export async function hiloStart() {
+  return callContract(HILO_CONTRACT_NAME, "start", []);
+}
+export async function hiloGuess(higher) {
+  return callContract(HILO_CONTRACT_NAME, "guess", [Cl.bool(higher)]);
+}
+export async function getHiloState(address) {
+  const t = await readOnly(HILO_CONTRACT_NAME, "get-state", [
+    Cl.principal(address),
+  ]);
+  return {
+    current: num(t.current),
+    run: num(t.run),
+    bestRun: num(t["best-run"]),
+    plays: num(t.plays),
+    active: val(t.active) === true || val(t.active) === "true",
+  };
+}
+
+/* ===================== Connect Four ===================== */
+
+export async function c4Create() {
+  return callContract(C4_CONTRACT_NAME, "create-game", []);
+}
+export async function c4Join(id) {
+  return callContract(C4_CONTRACT_NAME, "join-game", [Cl.uint(id)]);
+}
+export async function c4Drop(id, col) {
+  return callContract(C4_CONTRACT_NAME, "drop", [Cl.uint(id), Cl.uint(col)]);
+}
+export async function getC4Count() {
+  return num(await readOnly(C4_CONTRACT_NAME, "get-game-count", []));
+}
+export async function getC4Game(id) {
+  const raw = await readOnly(C4_CONTRACT_NAME, "get-game", [Cl.uint(id)]);
+  const t = raw && raw.value ? raw.value : raw;
+  if (!t || !t["player-x"]) return null;
+  return { ...normGame(t, id) };
+}
+export async function getC4Record(address) {
+  const r = await readOnly(C4_CONTRACT_NAME, "get-record", [
+    Cl.principal(address),
+  ]);
+  return { wins: num(r.wins), losses: num(r.losses), draws: num(r.draws) };
+}
+export async function getC4RecentGames(limit = 12) {
+  const count = await getC4Count();
+  const ids = [];
+  for (let i = count; i > 0 && ids.length < limit; i--) ids.push(i);
+  const games = await Promise.all(
+    ids.map((i) => getC4Game(i).catch(() => null)),
+  );
   return games.filter(Boolean);
 }

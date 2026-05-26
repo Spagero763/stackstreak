@@ -454,6 +454,57 @@ code {
   margin-left: auto;
 }
 
+/* solo game controls */
+.choice-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn.big {
+  font-size: 18px;
+  padding: 16px 28px;
+  border-radius: 12px;
+}
+.hilo-current {
+  font-size: 64px;
+  font-weight: 800;
+  text-align: center;
+  margin: 4px 0 20px;
+  color: var(--accent-2);
+  letter-spacing: -0.03em;
+}
+
+/* connect four */
+.c4-board {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  max-width: 420px;
+  margin: 0 auto;
+  background: #0b1733;
+  padding: 8px;
+  border-radius: 12px;
+}
+.c4-cell {
+  aspect-ratio: 1 / 1;
+  font-size: clamp(18px, 6vw, 26px);
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.1s ease;
+}
+.c4-cell:not(:disabled):hover {
+  background: #2a3346;
+}
+.c4-cell:disabled {
+  cursor: default;
+}
+
 /* footer */
 .footer {
   margin: 36px 0 16px;
