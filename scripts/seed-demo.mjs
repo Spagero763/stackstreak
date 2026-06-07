@@ -71,7 +71,7 @@ const SENDER = KEY ? getAddressFromPrivateKey(KEY, NETWORK) : "(dry-run — no k
 function buildPlan() {
   const plan = [];
   for (let i = 0; i < COUNTS.streak; i++)
-    plan.push({ game: "streak", fn: "play", args: [], note: "daily roll" });
+    plan.push({ game: "stackstreak", fn: "play", args: [], note: "daily roll" });
   for (let i = 0; i < COUNTS.coin; i++) {
     const guess = i % 2; // alternate heads/tails
     plan.push({
