@@ -64,8 +64,33 @@ plan:
     - id: 0
       transactions:
         - emulated-contract-publish:
+            contract-name: coinflip
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/coinflip.clar
+            clarity-version: 3
+        - emulated-contract-publish:
+            contract-name: connectfour
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/connectfour.clar
+            clarity-version: 3
+        - emulated-contract-publish:
+            contract-name: hilo
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/hilo.clar
+            clarity-version: 3
+        - emulated-contract-publish:
+            contract-name: rps
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/rps.clar
+            clarity-version: 3
+        - emulated-contract-publish:
             contract-name: stackstreak
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             path: contracts/stackstreak.clar
+            clarity-version: 3
+        - emulated-contract-publish:
+            contract-name: tictactoe
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/tictactoe.clar
             clarity-version: 3
       epoch: "3.2"
