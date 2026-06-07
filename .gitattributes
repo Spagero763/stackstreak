@@ -1,3 +1,8 @@
 tests/** linguist-vendored
 vitest.config.js linguist-vendored
-* text=lf
+
+# Normalize all text files to LF in the repo and on checkout. Clarity's
+# compiler (Clarinet) rejects CRLF, so .clar must always be LF — make that
+# explicit so a Windows checkout can't reintroduce CRLF.
+* text=auto eol=lf
+*.clar text eol=lf
