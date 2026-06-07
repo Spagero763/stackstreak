@@ -79,6 +79,11 @@ plan:
             path: contracts/hilo.clar
             clarity-version: 3
         - emulated-contract-publish:
+            contract-name: reels
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/reels.clar
+            clarity-version: 3
+        - emulated-contract-publish:
             contract-name: rps
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             path: contracts/rps.clar

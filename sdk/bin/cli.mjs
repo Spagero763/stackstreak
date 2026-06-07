@@ -80,6 +80,10 @@ Writes (need STACKS_PRIVATE_KEY = a wallet YOU control):
   c4-create                 open a Connect Four game
   c4-join <id>              join a game
   c4-drop <id> <col 0-6>    drop a disc
+  reels-stats [address]     Lucky Reels stats
+  reels-top                 most jackpots
+  reels-feed                recent spins
+  spin                      spin the Lucky Reels (write)
 
 Env: STACKS_NETWORK (default mainnet), STACKS_PRIVATE_KEY (writes only)`);
 }
@@ -315,6 +319,34 @@ async function main() {
         if (!id || Number.isNaN(col) || col < 0 || col > 6)
           return console.error("usage: c4-drop <id> <col 0-6>");
         const txid = await sdk.c4Drop(id, col, needKey());
+        console.log("submitted:", explorer(txid));
+        break;
+      }
+
+      // ---- Lucky Reels ----
+      case "reels-stats": {
+        const a = args[0] || myAddress();
+        console.log(a);
+        console.log(await sdk.getReelsStats(a));
+        break;
+      }
+      case "reels-top":
+        console.log(await sdk.getReelsTop());
+        break;
+      case "reels-feed": {
+        const feed = await sdk.getRecentSpins(15);
+        const SYM = ["🍒", "🍋", "🔔", "⭐", "💎", "7️⃣"];
+        const TIER = ["—", "pair", "JACKPOT"];
+        feed.forEach((s) =>
+          console.log(
+            `${s.player}  ${s.reels.map((r) => SYM[r] ?? "?").join(" ")}  ${TIER[s.tier]}${s.tier ? ` (${s.streak}🔥)` : ""}`,
+          ),
+        );
+        if (!feed.length) console.log("No spins yet.");
+        break;
+      }
+      case "spin": {
+        const txid = await sdk.reelsSpin(needKey());
         console.log("submitted:", explorer(txid));
         break;
       }
