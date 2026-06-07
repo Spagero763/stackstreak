@@ -14,6 +14,7 @@ import {
   connectWallet,
   disconnectWallet,
 } from "./stacks";
+import Home from "./components/Home.jsx";
 import StreakGame from "./components/StreakGame.jsx";
 import TicTacToe from "./components/TicTacToe.jsx";
 import CoinFlip from "./components/CoinFlip.jsx";
@@ -24,6 +25,7 @@ import ConnectFour from "./components/ConnectFour.jsx";
 const short = (a) => (a ? `${a.slice(0, 5)}…${a.slice(-4)}` : "");
 
 const GAMES = [
+  { id: "home", label: "🏠 Home", Component: Home },
   { id: "streak", label: "⚡ Daily Streak", Component: StreakGame },
   { id: "ttt", label: "⭕ Tic-Tac-Toe", Component: TicTacToe },
   { id: "coinflip", label: "🪙 Coin Flip", Component: CoinFlip },
@@ -34,7 +36,7 @@ const GAMES = [
 
 export default function App() {
   const [address, setAddress] = useState(null);
-  const [view, setView] = useState("streak");
+  const [view, setView] = useState("home");
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -111,7 +113,11 @@ export default function App() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
           >
-            <Active address={address} onConnect={onConnect} />
+            <Active
+              address={address}
+              onConnect={onConnect}
+              onNavigate={setView}
+            />
           </motion.div>
         </AnimatePresence>
       </main>
