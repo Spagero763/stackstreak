@@ -52,7 +52,7 @@ function interleave(lists, cap) {
 
 const settled = (r, fallback) => (r.status === "fulfilled" ? r.value : fallback);
 
-export default function Home({ address, onNavigate }) {
+export default function Home({ address, onConnect, onNavigate }) {
   const [champs, setChamps] = useState({});
   const [stats, setStats] = useState({ plays: 0, players: 0, pvp: 0 });
   const [feed, setFeed] = useState([]);
@@ -151,15 +151,22 @@ export default function Home({ address, onNavigate }) {
     <>
       <Hero
         emoji="🎮"
-        title="Six provably-fair games. One chain. No house."
+        title="Seven provably-fair games. One chain. No house."
         sub="Every move is a single Stacks transaction, settled by a Clarity contract on Bitcoin. No wagering, no admin keys, nothing to trust — pick a game and play."
       />
 
       <div className="home-cta">
+        {!address && (
+          <button className="btn" onClick={onConnect}>
+            Connect &amp; play
+          </button>
+        )}
         <a className="btn ghost share" href={shareUrl()} target="_blank" rel="noreferrer">
           𝕏  Share the arcade
         </a>
       </div>
+
+      {!address && <HowToPlay onConnect={onConnect} />}
 
       {error && <div className="banner error">{error}</div>}
 
@@ -220,6 +227,45 @@ export default function Home({ address, onNavigate }) {
         )}
       />
     </>
+  );
+}
+
+// First-time onboarding: the real barrier for new players is "I don't have a
+// Stacks wallet." Three plain steps + the two main wallets get them in.
+function HowToPlay({ onConnect }) {
+  return (
+    <section className="howto">
+      <h2 className="howto-title">New here? You're 3 steps from playing</h2>
+      <ol className="howto-steps">
+        <li>
+          <span className="howto-num">1</span>
+          <div>
+            <b>Get a Stacks wallet</b> — a free browser extension.
+            <div className="howto-links">
+              <a href="https://leather.io/" target="_blank" rel="noreferrer">Leather ↗</a>
+              <a href="https://www.xverse.app/" target="_blank" rel="noreferrer">Xverse ↗</a>
+            </div>
+          </div>
+        </li>
+        <li>
+          <span className="howto-num">2</span>
+          <div>
+            <b>Add a little STX</b> — each move is one on-chain transaction, so you
+            need a small amount to cover network fees.
+          </div>
+        </li>
+        <li>
+          <span className="howto-num">3</span>
+          <div>
+            <b>Connect &amp; play</b> — pick any game below. Your stats, streaks and
+            spot on the leaderboard live on-chain.
+            <div className="howto-links">
+              <button className="link-btn" onClick={onConnect}>Connect wallet →</button>
+            </div>
+          </div>
+        </li>
+      </ol>
+    </section>
   );
 }
 

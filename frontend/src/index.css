@@ -835,6 +835,70 @@ code {
 .home-stats {
   margin-top: 18px;
 }
+
+/* first-time onboarding */
+.howto {
+  margin: 20px 0 4px;
+  padding: 18px 20px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+.howto-title {
+  margin: 0 0 14px;
+  font-size: 16px;
+}
+.howto-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.howto-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.howto-steps b {
+  color: var(--text);
+}
+.howto-num {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(252, 100, 50, 0.15);
+  border: 1px solid rgba(252, 100, 50, 0.4);
+  color: var(--accent-2);
+  font-weight: 800;
+  font-size: 13px;
+}
+.howto-links {
+  display: flex;
+  gap: 14px;
+  margin-top: 6px;
+}
+.howto-links a,
+.link-btn {
+  color: var(--accent-2);
+  text-decoration: none;
+  font-weight: 700;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 14px;
+}
+.howto-links a:hover,
+.link-btn:hover {
+  text-decoration: underline;
+}
 .home-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
