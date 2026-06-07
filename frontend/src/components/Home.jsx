@@ -14,6 +14,8 @@ import {
   getRecentRps,
   getRecentHilo,
   getRecentC4,
+  getReelsTop,
+  getRecentSpins,
 } from "../stacks";
 import { short } from "./util";
 import { Hero, StatTile, FeedList } from "./shared.jsx";
@@ -27,6 +29,7 @@ const GAME_CARDS = [
   { id: "rps", icon: "✊", name: "Rock-Paper-Scissors", blurb: "Beat the contract" },
   { id: "hilo", icon: "🔢", name: "Higher / Lower", blurb: "Extend your run" },
   { id: "c4", icon: "🔴", name: "Connect Four", blurb: "PvP, 4-in-a-row" },
+  { id: "reels", icon: "🎰", name: "Lucky Reels", blurb: "Spin for a jackpot" },
 ];
 
 // RPS outcome codes mirror the contract: 0 draw, 1 win, 2 loss.
@@ -70,11 +73,14 @@ export default function Home({ address, onNavigate }) {
       getRecentRps(8),
       getRecentHilo(8),
       getRecentC4(8),
+      getReelsTop(),
+      getRecentSpins(8),
     ]);
     const [
       streakTop, coinTop, rpsTop, hiloTop,
       totalPlays, players, tttCount, c4Count,
       rPlays, rFlips, rRps, rHilo, rC4,
+      reelsTop, rSpins,
     ] = results;
 
     const tttN = settled(tttCount, 0);
@@ -85,6 +91,7 @@ export default function Home({ address, onNavigate }) {
       coinflip: champ(settled(coinTop, null), (t) => `${t.streak}🔥`),
       rps: champ(settled(rpsTop, null), (t) => `${t.streak}🔥`),
       hilo: champ(settled(hiloTop, null), (t) => `run ${t.run}`),
+      reels: champ(settled(reelsTop, null), (t) => `${t.jackpots}🎰`),
       ttt: { sub: `${tttN} game${tttN === 1 ? "" : "s"}` },
       c4: { sub: `${c4N} game${c4N === 1 ? "" : "s"}` },
     });
@@ -119,6 +126,14 @@ export default function Home({ address, onNavigate }) {
           game: "c4", icon: "🔴", txId: c.txId, player: c.player,
           summary: c.event === "create" ? <>opened a game</> : <>dropped a disc</>,
         })),
+        settled(rSpins, []).map((s) => ({
+          game: "reels", icon: "🎰", txId: s.txId, player: s.player,
+          summary: s.tier === 2
+            ? <>spun · <b className="strong">JACKPOT</b></>
+            : s.tier === 1
+              ? <>spun · <b className="strong">pair</b></>
+              : <>spun the reels</>,
+        })),
       ],
       18,
     );
@@ -149,7 +164,7 @@ export default function Home({ address, onNavigate }) {
       {error && <div className="banner error">{error}</div>}
 
       <section className="stats-grid home-stats">
-        <StatTile label="Games live" value="6" accent />
+        <StatTile label="Games live" value="7" accent />
         <StatTile label="Streak plays" value={stats.plays} />
         <StatTile label="Streak players" value={stats.players} />
         <StatTile label="PvP matches" value={stats.pvp} />

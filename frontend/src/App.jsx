@@ -21,6 +21,7 @@ import CoinFlip from "./components/CoinFlip.jsx";
 import RPS from "./components/RPS.jsx";
 import HiLo from "./components/HiLo.jsx";
 import ConnectFour from "./components/ConnectFour.jsx";
+import Reels from "./components/Reels.jsx";
 
 const short = (a) => (a ? `${a.slice(0, 5)}…${a.slice(-4)}` : "");
 
@@ -32,6 +33,7 @@ const GAMES = [
   { id: "rps", label: "✊ RPS", Component: RPS },
   { id: "hilo", label: "🔢 Higher/Lower", Component: HiLo },
   { id: "c4", label: "🔴 Connect Four", Component: ConnectFour },
+  { id: "reels", label: "🎰 Lucky Reels", Component: Reels },
 ];
 
 export default function App() {

@@ -14,6 +14,7 @@ export const COINFLIP_CONTRACT_NAME = "coinflip";
 export const RPS_CONTRACT_NAME = "rps";
 export const HILO_CONTRACT_NAME = "hilo";
 export const C4_CONTRACT_NAME = "connectfour";
+export const REELS_CONTRACT_NAME = "reels";
 
 // Hiro API base for the configured network.
 export const API_BASE =

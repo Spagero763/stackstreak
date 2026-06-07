@@ -791,6 +791,40 @@ code {
 }
 
 /* ===================================================================
+   Lucky Reels
+   =================================================================== */
+.reels-stage {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px 0 16px;
+  min-height: 140px;
+  align-items: center;
+}
+.reel {
+  width: 90px;
+  height: 110px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fff7e6 0%, #ffe7b0 100%);
+  border: 2px solid #e8a317;
+  box-shadow:
+    inset 0 -6px 14px rgba(0, 0, 0, 0.18),
+    0 10px 26px rgba(232, 163, 23, 0.25);
+  overflow: hidden;
+}
+.reel-face {
+  font-size: 52px;
+  line-height: 1;
+  user-select: none;
+}
+.reels-row {
+  font-size: 18px;
+  letter-spacing: 2px;
+}
+
+/* ===================================================================
    Home dashboard
    =================================================================== */
 .home-cta {

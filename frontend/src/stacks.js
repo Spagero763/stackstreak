@@ -22,6 +22,7 @@ import {
   RPS_CONTRACT_NAME,
   HILO_CONTRACT_NAME,
   C4_CONTRACT_NAME,
+  REELS_CONTRACT_NAME,
   API_BASE,
 } from "./config";
 
@@ -401,4 +402,37 @@ export async function getRecentC4(limit = 15) {
     player: addr(v.player) || addr(v["player-x"]) || addr(v["player-o"]),
     txId: v.txId,
   }));
+}
+
+/* ===================== Lucky Reels (slots) ===================== */
+
+export async function reelsSpin() {
+  return callContract(REELS_CONTRACT_NAME, "spin", []);
+}
+export async function getReelsStats(address) {
+  const t = await readOnly(REELS_CONTRACT_NAME, "get-stats", [
+    Cl.principal(address),
+  ]);
+  return {
+    spins: num(t.spins),
+    wins: num(t.wins),
+    jackpots: num(t.jackpots),
+    streak: num(t.streak),
+    bestStreak: num(t["best-streak"]),
+  };
+}
+export async function getReelsTop() {
+  const t = await readOnly(REELS_CONTRACT_NAME, "get-top", []);
+  return { player: addr(t.player), jackpots: num(t.jackpots) };
+}
+export async function getRecentSpins(limit = 15) {
+  return (await getEventTuples(REELS_CONTRACT_NAME, limit))
+    .filter((v) => evName(v) === "spin")
+    .map((v) => ({
+      player: addr(v.player),
+      reels: [num(v.r1), num(v.r2), num(v.r3)],
+      tier: num(v.tier),
+      streak: num(v.streak),
+      txId: v.txId,
+    }));
 }

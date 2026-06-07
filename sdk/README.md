@@ -3,8 +3,8 @@
 JavaScript SDK + CLI for the [StackStreak](https://github.com/Spagero763/stackstreak)
 on-chain game hub on [Stacks](https://www.stacks.co/) (Bitcoin L2).
 
-**Six games**, one client:
-Daily Streak · Tic-Tac-Toe · Coin Flip · Rock-Paper-Scissors · Higher-or-Lower · Connect Four.
+**Seven games**, one client:
+Daily Streak · Tic-Tac-Toe · Coin Flip · Rock-Paper-Scissors · Higher-or-Lower · Connect Four · Lucky Reels.
 
 Reads run anywhere (browser or Node). Signed write helpers require a private
 key, so use them only with a wallet **you** control (a CLI or backend you run).
@@ -44,6 +44,7 @@ await sdk.rpsPlay(1, key);       // RPS, 0 rock / 1 paper / 2 scissors
 await sdk.hiloStart(key);        // start a HiLo run
 await sdk.hiloGuess(true, key);  // guess higher
 await sdk.c4Create(key);         // open a connect-four game
+await sdk.reelsSpin(key);        // spin the Lucky Reels slot machine
 ```
 
 ## CLI
@@ -97,6 +98,11 @@ The CLI prints an explorer link for every submitted transaction.
 - `getC4Count()` · `getC4Game(id)` · `getC4Record(address)`
 - `getC4RecentGames(limit)` · `getRecentC4(limit)` — decoded drop events
 - `c4Create(senderKey)` · `c4Join(id, senderKey)` · `c4Drop(id, col, senderKey)`
+
+**Lucky Reels**
+- `getReelsStats(address)` → `{ spins, wins, jackpots, streak, bestStreak }`
+- `getReelsTop()` — most jackpots · `getRecentSpins(limit)` — decoded spin events
+- `reelsSpin(senderKey)` — one spin, returns three symbols (`0..5`)
 
 **Constants:** `TTT_STATUS` and `C4_STATUS` map status codes (`OPEN`, `ACTIVE`, `X_WON`, `O_WON`, `DRAW`).
 

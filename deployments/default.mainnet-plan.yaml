@@ -44,3 +44,13 @@ plan:
             anchor-block-only: true
             clarity-version: 3
       epoch: "3.2"
+    - id: 1
+      transactions:
+        - contract-publish:
+            contract-name: reels
+            expected-sender: SP3JKFGFTQZSDYDRA4JSV0HST1D610WMR1G7K367T
+            cost: 35000
+            path: "contracts\\reels.clar"
+            anchor-block-only: true
+            clarity-version: 3
+      epoch: "3.2"

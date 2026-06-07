@@ -20,6 +20,11 @@ path = 'contracts/hilo.clar'
 clarity_version = 3
 epoch = 'latest'
 
+[contracts.reels]
+path = 'contracts/reels.clar'
+clarity_version = 3
+epoch = 'latest'
+
 [contracts.rps]
 path = 'contracts/rps.clar'
 clarity_version = 3

@@ -22,6 +22,7 @@ export const COINFLIP_CONTRACT_NAME = "coinflip";
 export const RPS_CONTRACT_NAME = "rps";
 export const HILO_CONTRACT_NAME = "hilo";
 export const C4_CONTRACT_NAME = "connectfour";
+export const REELS_CONTRACT_NAME = "reels";
 
 export const TTT_STATUS = {
   OPEN: 0,
@@ -322,6 +323,36 @@ export function createClient(opts = {}) {
       txId: v.txId,
     }));
 
+  // ---- Lucky Reels (slots) ----
+  const reelsSpin = (senderKey) =>
+    write(REELS_CONTRACT_NAME, "spin", [], senderKey);
+  const getReelsStats = async (address) => {
+    const t = await read(REELS_CONTRACT_NAME, "get-stats", [
+      Cl.principal(address),
+    ]);
+    return {
+      spins: num(t.spins),
+      wins: num(t.wins),
+      jackpots: num(t.jackpots),
+      streak: num(t.streak),
+      bestStreak: num(t["best-streak"]),
+    };
+  };
+  const getReelsTop = async () => {
+    const t = await read(REELS_CONTRACT_NAME, "get-top", []);
+    return { player: addr(t.player), jackpots: num(t.jackpots) };
+  };
+  const getRecentSpins = async (limit = 15) =>
+    (await getContractEvents(REELS_CONTRACT_NAME, limit))
+      .filter((v) => (val(v.event) ?? v.event) === "spin")
+      .map((v) => ({
+        player: addr(v.player),
+        reels: [num(v.r1), num(v.r2), num(v.r3)],
+        tier: num(v.tier),
+        streak: num(v.streak),
+        txId: v.txId,
+      }));
+
   // ---- Signed writes (legacy aliases kept for back-compat) ----
   const play = (senderKey) =>
     write(STREAK_CONTRACT_NAME, "play", [], senderKey);
@@ -375,6 +406,11 @@ export function createClient(opts = {}) {
     getC4Record,
     getC4RecentGames,
     getRecentC4,
+    // lucky reels
+    reelsSpin,
+    getReelsStats,
+    getReelsTop,
+    getRecentSpins,
     // generic
     getContractEvents,
   };
