@@ -1,0 +1,18 @@
+<svg width="320" height="72" viewBox="0 0 320 72" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="StackStreak">
+  <defs>
+    <linearGradient id="ss-grad-h" x1="8" y1="8" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF8A5C"/>
+      <stop offset="1" stop-color="#FC6432"/>
+    </linearGradient>
+  </defs>
+  <!-- mark -->
+  <rect x="6" y="6" width="60" height="60" rx="16" fill="#15131F"/>
+  <rect x="6.5" y="6.5" width="59" height="59" rx="15.5" stroke="#FC6432" stroke-opacity="0.35"/>
+  <path d="M39 13 L24 39 H34 L30 51 L35 51 L33 59 L48 33 H38 L42 21 H37 L39 13 Z" fill="url(#ss-grad-h)"/>
+  <rect x="17" y="54" width="14" height="3" rx="1.5" fill="#FC6432" fill-opacity="0.55"/>
+  <rect x="17" y="48" width="9" height="3" rx="1.5" fill="#FC6432" fill-opacity="0.3"/>
+  <!-- wordmark -->
+  <text x="84" y="46" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif" font-size="30" font-weight="700" letter-spacing="-1">
+    <tspan fill="#EAEAF2">Stack</tspan><tspan fill="#FC6432">Streak</tspan>
+  </text>
+</svg>
