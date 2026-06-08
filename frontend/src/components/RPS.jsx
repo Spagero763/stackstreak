@@ -11,6 +11,7 @@ import {
   ChampionBanner,
   FeedList,
   Hero,
+  ShareButton,
   StatTile,
   TxHint,
 } from "./shared.jsx";
@@ -148,6 +149,15 @@ export default function RPS({ address, onConnect }) {
           <StatTile label="Losses" value={stats.losses} />
           <StatTile label="Draws" value={stats.draws} />
         </section>
+      )}
+
+      {stats && stats.plays > 0 && (
+        <div className="share-row">
+          <ShareButton
+            text={`${stats.wins} wins and a ${stats.streak}🔥 streak at on-chain Rock-Paper-Scissors on StackStreak (@Stacks). The contract plays you — provably fair. Try it:`}
+            label="𝕏  Share my record"
+          />
+        </div>
       )}
 
       <FeedList

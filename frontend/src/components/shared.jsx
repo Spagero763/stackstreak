@@ -123,6 +123,22 @@ export function TxHint({ txid, label = "Submitted!" }) {
   );
 }
 
+/* ------------ Share to X ------------ */
+// One-tap share so a player who's doing well can recruit others — every share
+// links back to the live arcade. `text` is the tweet body; the site URL is
+// appended automatically.
+export function ShareButton({ text, label = "𝕏  Share" }) {
+  const url = typeof window !== "undefined" ? window.location.origin : "";
+  const href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+    text,
+  )}&url=${encodeURIComponent(url)}`;
+  return (
+    <a className="btn ghost share" href={href} target="_blank" rel="noreferrer">
+      {label}
+    </a>
+  );
+}
+
 /* ------------ Empty / loading skeleton block ------------ */
 export function Skeleton({ rows = 3 }) {
   return (

@@ -11,6 +11,7 @@ import {
   ChampionBanner,
   FeedList,
   Hero,
+  ShareButton,
   StatTile,
   TxHint,
 } from "./shared.jsx";
@@ -136,6 +137,15 @@ export default function CoinFlip({ address, onConnect }) {
           <StatTile label="Wins" value={stats.wins} />
           <StatTile label="Flips" value={stats.flips} />
         </section>
+      )}
+
+      {stats && stats.flips > 0 && (
+        <div className="share-row">
+          <ShareButton
+            text={`I'm on a ${stats.streak}🔥 Coin Flip streak on StackStreak — provably-fair, on-chain on @Stacks. Every flip is one Bitcoin-settled tx. Beat me:`}
+            label="𝕏  Share my streak"
+          />
+        </div>
       )}
 
       <FeedList
