@@ -12,6 +12,7 @@ import {
   ChampionBanner,
   FeedList,
   Hero,
+  ShareButton,
   StatTile,
   TxHint,
 } from "./shared.jsx";
@@ -132,6 +133,15 @@ export default function HiLo({ address, onConnect }) {
           <StatTile label="Status" value={active ? "live" : "ended"} />
           <StatTile label="Calls" value={state.plays} />
         </section>
+      )}
+
+      {state && state.bestRun > 0 && (
+        <div className="share-row">
+          <ShareButton
+            text={`My best Higher-or-Lower run on StackStreak is ${state.bestRun} — fully on-chain on @Stacks, one tx per call, provably fair. Can you beat it?`}
+            label="𝕏  Share my best run"
+          />
+        </div>
       )}
 
       <FeedList

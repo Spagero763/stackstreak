@@ -7,7 +7,7 @@ import {
   getRecentSpins,
 } from "../stacks";
 import { readableError, short } from "./util";
-import { ChampionBanner, FeedList, Hero, StatTile, TxHint } from "./shared.jsx";
+import { ChampionBanner, FeedList, Hero, ShareButton, StatTile, TxHint } from "./shared.jsx";
 
 const SYM = ["🍒", "🍋", "🔔", "⭐", "💎", "7️⃣"];
 const TIER_LABEL = { 0: "no win", 1: "pair!", 2: "JACKPOT!" };
@@ -136,6 +136,15 @@ export default function Reels({ address, onConnect }) {
           <StatTile label="Wins" value={stats.wins} />
           <StatTile label="Spins" value={stats.spins} />
         </section>
+      )}
+
+      {stats && stats.spins > 0 && (
+        <div className="share-row">
+          <ShareButton
+            text={`${stats.jackpots}🎰 jackpots on Lucky Reels — an on-chain slot machine on @Stacks. The reels are drawn from the Bitcoin block, provably fair, no house. Spin free:`}
+            label="𝕏  Share my jackpots"
+          />
+        </div>
       )}
 
       <FeedList
