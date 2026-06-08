@@ -65,13 +65,15 @@ export default function App() {
     <div className="page">
       <header className="topbar">
         <div className="brand">
-          <motion.span
-            className="logo"
-            animate={{ rotate: [0, -8, 8, -4, 4, 0] }}
-            transition={{ duration: 1.4, repeat: Infinity, repeatDelay: 4 }}
-          >
-            ⚡
-          </motion.span>
+          <motion.img
+            src="/mark.svg"
+            alt=""
+            className="logo-mark"
+            initial={{ rotate: -8, scale: 0.9, opacity: 0 }}
+            animate={{ rotate: 0, scale: 1, opacity: 1 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            whileHover={{ rotate: -6, scale: 1.06 }}
+          />
           <span className="brand-name">{APP_NAME}</span>
           <span className={`net net-${NETWORK}`}>{NETWORK}</span>
         </div>
@@ -85,6 +87,8 @@ export default function App() {
           </button>
         )}
       </header>
+
+      <Marquee />
 
       <nav className="tabs">
         {GAMES.map((g) => (
@@ -110,10 +114,10 @@ export default function App() {
         <AnimatePresence mode="wait">
           <motion.div
             key={active.id}
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
+            transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
           >
             <Active
               address={address}
@@ -134,6 +138,35 @@ export default function App() {
         )}
         <span>· Provably fair · No house · No admin keys</span>
       </footer>
+    </div>
+  );
+}
+
+// Scrolling ticker — a signature "this was designed" detail, à la editorial sites.
+function Marquee() {
+  const items = [
+    "PROVABLY FAIR",
+    "SETTLED ON BITCOIN",
+    "NO HOUSE",
+    "NO ADMIN KEYS",
+    "7 GAMES",
+    "ONE TX PER MOVE",
+    "OPEN SOURCE",
+  ];
+  const strip = (
+    <div className="marquee-strip" aria-hidden>
+      {items.map((t, i) => (
+        <span key={i} className="marquee-item">
+          {t}
+          <span className="marquee-dot">✦</span>
+        </span>
+      ))}
+    </div>
+  );
+  return (
+    <div className="marquee" role="presentation">
+      {strip}
+      {strip}
     </div>
   );
 }
