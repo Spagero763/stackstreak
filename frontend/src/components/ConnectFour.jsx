@@ -77,7 +77,7 @@ export default function ConnectFour({ address, onConnect }) {
   return (
     <>
       <Hero
-        emoji="🔴"
+        icon="c4"
         title="Connect Four"
         sub="Open a game or join one, then drop discs into columns. First to line up four in any direction wins. Every move is a transaction."
       />

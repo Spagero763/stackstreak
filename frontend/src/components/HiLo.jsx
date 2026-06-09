@@ -67,13 +67,12 @@ export default function HiLo({ address, onConnect }) {
   return (
     <>
       <Hero
-        emoji="🔢"
+        icon="hilo"
         title="Higher or Lower"
         sub="A number from 1–100 is revealed. Call whether the next is higher or lower. Chain correct calls to grow your run — one miss ends it."
       />
 
       <ChampionBanner
-        icon="👑"
         label="holds the longest run"
         address={top?.player}
         value={top ? `${top.run}` : null}

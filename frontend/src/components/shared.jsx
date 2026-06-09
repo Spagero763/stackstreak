@@ -4,17 +4,29 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { explorerTx } from "../config";
 import { short } from "./util";
+import Icon from "./Icon.jsx";
+
+const EASE = [0.16, 1, 0.3, 1];
 
 /* ------------ Hero ------------ */
-export function Hero({ emoji, title, sub }) {
+export function Hero({ icon, title, sub }) {
   return (
     <motion.section
       className="hero hero-pad"
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
+      transition={{ duration: 0.5, ease: EASE }}
     >
-      <div className="hero-emoji">{emoji}</div>
+      {icon && (
+        <motion.div
+          className="hero-icon"
+          initial={{ scale: 0.7, rotate: -8, opacity: 0 }}
+          animate={{ scale: 1, rotate: 0, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.05 }}
+        >
+          <Icon name={icon} size={28} strokeWidth={1.9} />
+        </motion.div>
+      )}
       <h1>{title}</h1>
       <p className="sub">{sub}</p>
     </motion.section>
@@ -47,11 +59,13 @@ export function StatTile({ label, value, accent }) {
 }
 
 /* ------------ Champion ribbon ------------ */
-export function ChampionBanner({ icon = "👑", label, address, value, you }) {
+export function ChampionBanner({ label, address, value, you }) {
   if (!address) {
     return (
       <div className="champion champion-empty">
-        <span className="champion-icon">{icon}</span>
+        <span className="champion-icon">
+          <Icon name="crown" size={18} />
+        </span>
         <span className="champion-text">No champion yet — claim the throne.</span>
       </div>
     );
@@ -59,11 +73,13 @@ export function ChampionBanner({ icon = "👑", label, address, value, you }) {
   return (
     <motion.div
       className={`champion ${you ? "champion-you" : ""}`}
-      initial={{ opacity: 0, scale: 0.96 }}
-      animate={{ opacity: 1, scale: 1 }}
+      initial={{ opacity: 0, scale: 0.96, y: 6 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 340, damping: 24 }}
     >
-      <span className="champion-icon" aria-hidden>{icon}</span>
+      <span className="champion-icon" aria-hidden>
+        <Icon name="crown" size={18} />
+      </span>
       <span className="champion-text">
         <b className="mono">{short(address)}</b> {label}
       </span>

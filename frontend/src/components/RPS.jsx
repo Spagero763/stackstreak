@@ -88,16 +88,15 @@ export default function RPS({ address, onConnect }) {
   return (
     <>
       <Hero
-        emoji="✊"
+        icon="rps"
         title="Rock · Paper · Scissors"
         sub="Play against the contract. It picks its move from on-chain entropy and scores the round. Every play is one transaction."
       />
 
       <ChampionBanner
-        icon="👑"
         label="holds the longest win streak"
         address={top?.player}
-        value={top ? `${top.streak}🔥` : null}
+        value={top ? `${top.streak}` : null}
         you={top?.player && top.player === address}
       />
 
@@ -144,7 +143,7 @@ export default function RPS({ address, onConnect }) {
 
       {stats && (
         <section className="stats-grid">
-          <StatTile label="Streak" value={`${stats.streak}🔥`} accent />
+          <StatTile label="Streak" value={`${stats.streak}`} accent />
           <StatTile label="Wins" value={stats.wins} />
           <StatTile label="Losses" value={stats.losses} />
           <StatTile label="Draws" value={stats.draws} />
@@ -154,7 +153,7 @@ export default function RPS({ address, onConnect }) {
       {stats && stats.plays > 0 && (
         <div className="share-row">
           <ShareButton
-            text={`${stats.wins} wins and a ${stats.streak}🔥 streak at on-chain Rock-Paper-Scissors on StackStreak (@Stacks). The contract plays you — provably fair. Try it:`}
+            text={`${stats.wins} wins and a ${stats.streak} streak at on-chain Rock-Paper-Scissors on StackStreak (@Stacks). The contract plays you — provably fair. Try it:`}
             label="𝕏  Share my record"
           />
         </div>

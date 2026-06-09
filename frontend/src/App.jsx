@@ -22,18 +22,19 @@ import RPS from "./components/RPS.jsx";
 import HiLo from "./components/HiLo.jsx";
 import ConnectFour from "./components/ConnectFour.jsx";
 import Reels from "./components/Reels.jsx";
+import Icon from "./components/Icon.jsx";
 
 const short = (a) => (a ? `${a.slice(0, 5)}…${a.slice(-4)}` : "");
 
 const GAMES = [
-  { id: "home", label: "🏠 Home", Component: Home },
-  { id: "streak", label: "⚡ Daily Streak", Component: StreakGame },
-  { id: "ttt", label: "⭕ Tic-Tac-Toe", Component: TicTacToe },
-  { id: "coinflip", label: "🪙 Coin Flip", Component: CoinFlip },
-  { id: "rps", label: "✊ RPS", Component: RPS },
-  { id: "hilo", label: "🔢 Higher/Lower", Component: HiLo },
-  { id: "c4", label: "🔴 Connect Four", Component: ConnectFour },
-  { id: "reels", label: "🎰 Lucky Reels", Component: Reels },
+  { id: "home", name: "Home", icon: "home", Component: Home },
+  { id: "streak", name: "Daily Streak", icon: "streak", Component: StreakGame },
+  { id: "ttt", name: "Tic-Tac-Toe", icon: "ttt", Component: TicTacToe },
+  { id: "coinflip", name: "Coin Flip", icon: "coinflip", Component: CoinFlip },
+  { id: "rps", name: "RPS", icon: "rps", Component: RPS },
+  { id: "hilo", name: "Higher / Lower", icon: "hilo", Component: HiLo },
+  { id: "c4", name: "Connect Four", icon: "c4", Component: ConnectFour },
+  { id: "reels", name: "Lucky Reels", icon: "reels", Component: Reels },
 ];
 
 export default function App() {
@@ -97,7 +98,8 @@ export default function App() {
             className={`tab ${view === g.id ? "active" : ""}`}
             onClick={() => setView(g.id)}
           >
-            {g.label}
+            <Icon name={g.icon} size={16} strokeWidth={2} />
+            <span>{g.name}</span>
           </button>
         ))}
       </nav>

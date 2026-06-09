@@ -19,17 +19,18 @@ import {
 } from "../stacks";
 import { short } from "./util";
 import { Hero, StatTile, FeedList } from "./shared.jsx";
+import Icon from "./Icon.jsx";
 
-// One card per game on the hub. `id` matches the tab id in App.jsx so a click
-// can deep-link straight into the game.
+// One card per game on the hub. `icon` is a name in the custom Icon set; `id`
+// matches the tab id in App.jsx so a click deep-links straight into the game.
 const GAME_CARDS = [
-  { id: "streak", icon: "⚡", name: "Daily Streak", blurb: "Roll & climb" },
-  { id: "ttt", icon: "⭕", name: "Tic-Tac-Toe", blurb: "PvP, 3-in-a-row" },
-  { id: "coinflip", icon: "🪙", name: "Coin Flip", blurb: "Call it" },
-  { id: "rps", icon: "✊", name: "Rock-Paper-Scissors", blurb: "Beat the contract" },
-  { id: "hilo", icon: "🔢", name: "Higher / Lower", blurb: "Extend your run" },
-  { id: "c4", icon: "🔴", name: "Connect Four", blurb: "PvP, 4-in-a-row" },
-  { id: "reels", icon: "🎰", name: "Lucky Reels", blurb: "Spin for a jackpot" },
+  { id: "streak", icon: "streak", name: "Daily Streak", blurb: "Roll & climb" },
+  { id: "ttt", icon: "ttt", name: "Tic-Tac-Toe", blurb: "PvP, 3-in-a-row" },
+  { id: "coinflip", icon: "coinflip", name: "Coin Flip", blurb: "Call it" },
+  { id: "rps", icon: "rps", name: "Rock-Paper-Scissors", blurb: "Beat the contract" },
+  { id: "hilo", icon: "hilo", name: "Higher / Lower", blurb: "Extend your run" },
+  { id: "c4", icon: "c4", name: "Connect Four", blurb: "PvP, 4-in-a-row" },
+  { id: "reels", icon: "reels", name: "Lucky Reels", blurb: "Spin for a jackpot" },
 ];
 
 // RPS outcome codes mirror the contract: 0 draw, 1 win, 2 loss.
@@ -88,10 +89,10 @@ export default function Home({ address, onConnect, onNavigate }) {
 
     setChamps({
       streak: champ(settled(streakTop, null), (t) => `${t.score} pts`),
-      coinflip: champ(settled(coinTop, null), (t) => `${t.streak}🔥`),
-      rps: champ(settled(rpsTop, null), (t) => `${t.streak}🔥`),
+      coinflip: champ(settled(coinTop, null), (t) => `${t.streak} streak`),
+      rps: champ(settled(rpsTop, null), (t) => `${t.streak} streak`),
       hilo: champ(settled(hiloTop, null), (t) => `run ${t.run}`),
-      reels: champ(settled(reelsTop, null), (t) => `${t.jackpots}🎰`),
+      reels: champ(settled(reelsTop, null), (t) => `${t.jackpots} jackpots`),
       ttt: { sub: `${tttN} game${tttN === 1 ? "" : "s"}` },
       c4: { sub: `${c4N} game${c4N === 1 ? "" : "s"}` },
     });
@@ -105,29 +106,29 @@ export default function Home({ address, onConnect, onNavigate }) {
     const merged = interleave(
       [
         settled(rPlays, []).map((p) => ({
-          game: "streak", icon: "⚡", txId: p.txId, player: p.player,
+          game: "streak", txId: p.txId, player: p.player,
           summary: <>rolled <b className="strong">{p.score}</b></>,
         })),
         settled(rFlips, []).map((f) => ({
-          game: "coinflip", icon: "🪙", txId: f.txId, player: f.player,
+          game: "coinflip", txId: f.txId, player: f.player,
           summary: <>flip · <b className={f.won ? "strong" : ""}>{f.won ? "won" : "lost"}</b></>,
         })),
         settled(rRps, []).map((r) => ({
-          game: "rps", icon: "✊", txId: r.txId, player: r.player,
+          game: "rps", txId: r.txId, player: r.player,
           summary: <>RPS · <b className={r.outcome === 1 ? "strong" : ""}>{RPS_OUTCOME[r.outcome] ?? "played"}</b></>,
         })),
         settled(rHilo, []).map((h) => ({
-          game: "hilo", icon: "🔢", txId: h.txId, player: h.player,
+          game: "hilo", txId: h.txId, player: h.player,
           summary: h.event === "start"
             ? <>started a run</>
             : <>{h.higher ? "▲" : "▼"} · <b className={h.correct ? "strong" : ""}>{h.correct ? "correct" : "out"}</b></>,
         })),
         settled(rC4, []).map((c) => ({
-          game: "c4", icon: "🔴", txId: c.txId, player: c.player,
+          game: "c4", txId: c.txId, player: c.player,
           summary: c.event === "create" ? <>opened a game</> : <>dropped a disc</>,
         })),
         settled(rSpins, []).map((s) => ({
-          game: "reels", icon: "🎰", txId: s.txId, player: s.player,
+          game: "reels", txId: s.txId, player: s.player,
           summary: s.tier === 2
             ? <>spun · <b className="strong">JACKPOT</b></>
             : s.tier === 1
@@ -150,7 +151,7 @@ export default function Home({ address, onConnect, onNavigate }) {
   return (
     <>
       <Hero
-        emoji="🎮"
+        icon="home"
         title="Seven provably-fair games. One chain. No house."
         sub="Every move is a single Stacks transaction, settled by a Clarity contract on Bitcoin. No wagering, no admin keys, nothing to trust — pick a game and play."
       />
@@ -162,7 +163,7 @@ export default function Home({ address, onConnect, onNavigate }) {
           </button>
         )}
         <a className="btn ghost share" href={shareUrl()} target="_blank" rel="noreferrer">
-          𝕏  Share the arcade
+          Share the arcade
         </a>
       </div>
 
@@ -187,11 +188,13 @@ export default function Home({ address, onConnect, onNavigate }) {
               className={`home-card ${youHold ? "home-card-you" : ""}`}
               onClick={() => onNavigate(g.id)}
               whileHover={{ y: -3 }}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25, delay: i * 0.04 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: i * 0.05 }}
             >
-              <span className="home-card-icon">{g.icon}</span>
+              <span className="home-card-icon">
+                <Icon name={g.icon} size={24} strokeWidth={2} />
+              </span>
               <span className="home-card-body">
                 <span className="home-card-name">{g.name}</span>
                 <span className="home-card-blurb">{g.blurb}</span>
@@ -201,7 +204,8 @@ export default function Home({ address, onConnect, onNavigate }) {
                   <>
                     <span className="home-card-champ-val">{c.value}</span>
                     <span className="mono home-card-champ-who">
-                      {youHold ? "you 👑" : `👑 ${short(c.player)}`}
+                      <Icon name="crown" size={11} />{" "}
+                      {youHold ? "you" : short(c.player)}
                     </span>
                   </>
                 ) : (
@@ -220,7 +224,9 @@ export default function Home({ address, onConnect, onNavigate }) {
         emptyText="No plays yet — be the first on the chain."
         renderRow={(it) => (
           <>
-            <span className="feed-game" aria-hidden>{it.icon}</span>
+            <span className="feed-game" aria-hidden>
+              <Icon name={it.game} size={16} strokeWidth={2} />
+            </span>
             <span className="mono">{short(it.player)}</span>
             <span>{it.summary}</span>
           </>
@@ -277,7 +283,7 @@ function champ(top, fmt) {
 
 function shareUrl() {
   const text =
-    "Six provably-fair on-chain games on @Stacks — coin flip, RPS, higher/lower, tic-tac-toe, connect four & a daily streak. Every move is one Bitcoin-settled tx. Play free:";
+    "Seven provably-fair on-chain games on @Stacks — coin flip, RPS, higher/lower, tic-tac-toe, connect four, lucky reels & a daily streak. Every move is one Bitcoin-settled tx. Play free:";
   const url = typeof window !== "undefined" ? window.location.origin : "";
   return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
 }

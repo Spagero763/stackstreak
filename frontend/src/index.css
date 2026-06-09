@@ -424,22 +424,39 @@ code {
   display: none;
 }
 .tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
   background: none;
   border: none;
   color: var(--muted);
-  font-size: 15px;
-  font-weight: 700;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   padding: 10px 14px;
   cursor: pointer;
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
+  transition: color 0.18s var(--ease-out);
+}
+.tab .icon {
+  opacity: 0.7;
+  transition: opacity 0.18s var(--ease-out);
 }
 .tab:hover {
   color: var(--text);
 }
+.tab:hover .icon {
+  opacity: 1;
+}
 .tab.active {
-  color: var(--text);
+  color: var(--accent);
   border-bottom-color: var(--accent);
+}
+.tab.active .icon {
+  opacity: 1;
 }
 
 /* tic-tac-toe */
@@ -617,11 +634,26 @@ code {
 .hero-pad {
   padding-top: 8px;
 }
-.hero-emoji {
-  font-size: clamp(40px, 7vw, 56px);
-  line-height: 1;
-  margin-bottom: 8px;
-  filter: drop-shadow(0 6px 22px rgba(252, 100, 50, 0.25));
+.icon {
+  display: block;
+  flex-shrink: 0;
+}
+.hero-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 14px;
+  border-radius: 16px;
+  color: var(--accent);
+  background: linear-gradient(
+    180deg,
+    rgba(252, 100, 50, 0.14),
+    rgba(252, 100, 50, 0.04)
+  );
+  border: 1px solid rgba(252, 100, 50, 0.3);
+  box-shadow: 0 8px 26px rgba(252, 100, 50, 0.16);
 }
 
 /* champion ribbon */
@@ -645,8 +677,9 @@ code {
   color: var(--muted);
 }
 .champion-icon {
-  font-size: 22px;
-  filter: drop-shadow(0 2px 6px rgba(252, 200, 80, 0.45));
+  display: inline-flex;
+  align-items: center;
+  color: var(--accent);
 }
 .champion-text {
   flex: 1;
@@ -1028,9 +1061,16 @@ code {
   border-color: rgba(61, 220, 151, 0.5);
 }
 .home-card-icon {
-  font-size: 30px;
-  line-height: 1;
-  filter: drop-shadow(0 4px 14px rgba(252, 100, 50, 0.25));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 11px;
+  color: var(--accent);
+  background: rgba(252, 100, 50, 0.1);
+  border: 1px solid rgba(252, 100, 50, 0.22);
 }
 .home-card-body {
   display: flex;
@@ -1060,12 +1100,17 @@ code {
   font-size: 15px;
 }
 .home-card-champ-who {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
   font-size: 11px;
   color: var(--muted);
 }
 .feed-game {
-  font-size: 18px;
-  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--accent-2);
 }
 
 @media (max-width: 560px) {
