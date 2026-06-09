@@ -83,16 +83,15 @@ export default function CoinFlip({ address, onConnect }) {
   return (
     <>
       <Hero
-        emoji="🪙"
+        icon="coinflip"
         title="Coin Flip"
         sub="Call it. The contract flips using on-chain entropy — get it right to build a streak. Every flip is one transaction."
       />
 
       <ChampionBanner
-        icon="👑"
         label="holds the longest streak"
         address={top?.player}
-        value={top ? `${top.streak}🔥` : null}
+        value={top ? `${top.streak}` : null}
         you={top?.player && top.player === address}
       />
 
@@ -132,7 +131,7 @@ export default function CoinFlip({ address, onConnect }) {
 
       {stats && (
         <section className="stats-grid">
-          <StatTile label="Streak" value={`${stats.streak}🔥`} accent />
+          <StatTile label="Streak" value={`${stats.streak}`} accent />
           <StatTile label="Best streak" value={stats.bestStreak} />
           <StatTile label="Wins" value={stats.wins} />
           <StatTile label="Flips" value={stats.flips} />
@@ -142,7 +141,7 @@ export default function CoinFlip({ address, onConnect }) {
       {stats && stats.flips > 0 && (
         <div className="share-row">
           <ShareButton
-            text={`I'm on a ${stats.streak}🔥 Coin Flip streak on StackStreak — provably-fair, on-chain on @Stacks. Every flip is one Bitcoin-settled tx. Beat me:`}
+            text={`I'm on a ${stats.streak} Coin Flip streak on StackStreak — provably-fair, on-chain on @Stacks. Every flip is one Bitcoin-settled tx. Beat me:`}
             label="𝕏  Share my streak"
           />
         </div>
@@ -161,7 +160,7 @@ export default function CoinFlip({ address, onConnect }) {
               <b className="strong">{LABEL[f.result]}</b>
             </span>
             <span className={`muted ${f.won ? "strong" : ""}`}>
-              {f.won ? `won · ${f.streak}🔥` : "lost"}
+              {f.won ? `won · ${f.streak}` : "lost"}
             </span>
           </>
         )}

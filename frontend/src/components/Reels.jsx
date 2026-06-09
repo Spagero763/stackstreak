@@ -77,16 +77,15 @@ export default function Reels({ address, onConnect }) {
   return (
     <>
       <Hero
-        emoji="🎰"
+        icon="reels"
         title="Lucky Reels"
         sub="Pull once — the contract draws three symbols from on-chain entropy. Any pair wins and extends your streak; three-of-a-kind is a jackpot. One spin, one transaction, no house edge."
       />
 
       <ChampionBanner
-        icon="🎰"
         label="has hit the most jackpots"
         address={top?.player}
-        value={top ? `${top.jackpots}🎰` : null}
+        value={top ? `${top.jackpots}` : null}
         you={top?.player && top.player === address}
       />
 
@@ -115,14 +114,14 @@ export default function Reels({ address, onConnect }) {
               }`}
             >
               {TIER_LABEL[revealed.tier]}
-              {revealed.tier > 0 ? ` · ${revealed.streak}🔥` : ""}
+              {revealed.tier > 0 ? ` · ${revealed.streak}` : ""}
             </motion.div>
           )}
         </AnimatePresence>
 
         <div className="choice-row">
           <button className="btn big" disabled={busy} onClick={onSpin}>
-            {busy ? "Spinning…" : address ? "🎰  Spin" : "Connect to spin"}
+            {busy ? "Spinning…" : address ? "Spin" : "Connect to spin"}
           </button>
         </div>
         {busy && <p className="hint">Confirm in wallet…</p>}
@@ -131,8 +130,8 @@ export default function Reels({ address, onConnect }) {
 
       {stats && (
         <section className="stats-grid">
-          <StatTile label="Streak" value={`${stats.streak}🔥`} accent />
-          <StatTile label="Jackpots" value={`${stats.jackpots}🎰`} />
+          <StatTile label="Streak" value={`${stats.streak}`} accent />
+          <StatTile label="Jackpots" value={`${stats.jackpots}`} />
           <StatTile label="Wins" value={stats.wins} />
           <StatTile label="Spins" value={stats.spins} />
         </section>
@@ -141,7 +140,7 @@ export default function Reels({ address, onConnect }) {
       {stats && stats.spins > 0 && (
         <div className="share-row">
           <ShareButton
-            text={`${stats.jackpots}🎰 jackpots on Lucky Reels — an on-chain slot machine on @Stacks. The reels are drawn from the Bitcoin block, provably fair, no house. Spin free:`}
+            text={`${stats.jackpots} jackpots on Lucky Reels — an on-chain slot machine on @Stacks. The reels are drawn from the Bitcoin block, provably fair, no house. Spin free:`}
             label="𝕏  Share my jackpots"
           />
         </div>
@@ -161,7 +160,7 @@ export default function Reels({ address, onConnect }) {
               ))}
             </span>
             <span className={`muted ${s.tier > 0 ? "strong" : ""}`}>
-              {s.tier === 2 ? `jackpot · ${s.streak}🔥` : s.tier === 1 ? `pair · ${s.streak}🔥` : "—"}
+              {s.tier === 2 ? `jackpot · ${s.streak}` : s.tier === 1 ? `pair · ${s.streak}` : "—"}
             </span>
           </>
         )}

@@ -87,7 +87,7 @@ export default function TicTacToe({ address, onConnect }) {
   return (
     <>
       <Hero
-        emoji="⭕"
+        icon="ttt"
         title="On-chain Tic-Tac-Toe"
         sub="Open a game or join an opponent. Every move is a transaction the contract validates — turns, wins and draws, all on Stacks."
       />

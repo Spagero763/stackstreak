@@ -91,13 +91,12 @@ export default function StreakGame({ address, onConnect }) {
   return (
     <>
       <Hero
-        emoji="⚡"
+        icon="streak"
         title="Play once. Build your streak. Climb the chain."
         sub="A provably-fair daily game. Every tap is a single transaction — your score is rolled by the contract from the current Bitcoin block, so nobody can fake it."
       />
 
       <ChampionBanner
-        icon="👑"
         label="leads the leaderboard"
         address={top?.player}
         value={top ? `${top.score} pts` : null}
@@ -152,7 +151,7 @@ export default function StreakGame({ address, onConnect }) {
         <section className="stats-block">
           <div className="stats-grid">
             <StatTile label="Your score" value={stats.total} accent />
-            <StatTile label="Streak" value={`${stats.streak}🔥`} />
+            <StatTile label="Streak" value={`${stats.streak}`} />
             <StatTile label="Best roll" value={stats.best} />
             <StatTile label="Plays" value={stats.plays} />
           </div>
@@ -207,7 +206,7 @@ export default function StreakGame({ address, onConnect }) {
                   <td>{medal(i)}</td>
                   <td className="mono">{short(row.address)}</td>
                   <td className="strong">{row.total}</td>
-                  <td>{row.streak}🔥</td>
+                  <td>{row.streak}</td>
                   <td>{row.best}</td>
                   <td>{row.plays}</td>
                 </motion.tr>
@@ -229,7 +228,7 @@ export default function StreakGame({ address, onConnect }) {
               rolled <b className="strong">{p.score}</b>
             </span>
             <span className="muted">
-              {p.streak}🔥 · {p.total} total
+              {p.streak} · {p.total} total
             </span>
           </>
         )}
@@ -243,7 +242,7 @@ function medal(i) {
 }
 
 function shareUrl(stats) {
-  const text = `I'm climbing the ⚡ StackStreak leaderboard on Stacks — ${stats.total} pts, ${stats.streak}🔥 streak. Tap to play and beat me:`;
+  const text = `I'm climbing the StackStreak leaderboard on Stacks — ${stats.total} pts, ${stats.streak} streak. Tap to play and beat me:`;
   const url = typeof window !== "undefined" ? window.location.origin : "";
   return `https://twitter.com/intent/tweet?text=${encodeURIComponent(
     text,
