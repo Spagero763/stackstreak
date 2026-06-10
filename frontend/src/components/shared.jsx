@@ -1,12 +1,44 @@
 // Shared visual primitives used across every game tab: hero, animated stat
 // tiles, the champion ribbon, animated feeds, txid hint, and the live "pulse"
 // indicator on auto-refresh. Keeps individual game components lean.
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { explorerTx } from "../config";
 import { short } from "./util";
 import Icon from "./Icon.jsx";
 
 const EASE = [0.16, 1, 0.3, 1];
+
+// Numbers tick up to their value instead of popping in — makes live on-chain
+// stats feel alive. Non-numeric values render as-is.
+function CountUp({ value }) {
+  const target = typeof value === "number" ? value : Number(value);
+  const isNum = Number.isFinite(target) && String(value).trim() !== "";
+  const [shown, setShown] = useState(isNum ? 0 : value);
+  const fromRef = useRef(0);
+
+  useEffect(() => {
+    if (!isNum) {
+      setShown(value);
+      return;
+    }
+    const from = fromRef.current;
+    const dur = 700;
+    const t0 = performance.now();
+    let raf;
+    const tick = (now) => {
+      const p = Math.min((now - t0) / dur, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setShown(Math.round(from + (target - from) * eased));
+      if (p < 1) raf = requestAnimationFrame(tick);
+      else fromRef.current = target;
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [isNum, target, value]);
+
+  return <>{shown}</>;
+}
 
 /* ------------ Hero ------------ */
 export function Hero({ icon, title, sub }) {
@@ -41,18 +73,9 @@ export function StatTile({ label, value, accent }) {
       whileHover={{ y: -2 }}
       transition={{ type: "spring", stiffness: 320, damping: 22 }}
     >
-      <AnimatePresence mode="popLayout">
-        <motion.div
-          key={String(value)}
-          className="stat-value"
-          initial={{ y: 12, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -12, opacity: 0 }}
-          transition={{ type: "spring", stiffness: 360, damping: 26 }}
-        >
-          {value}
-        </motion.div>
-      </AnimatePresence>
+      <div className="stat-value">
+        <CountUp value={value} />
+      </div>
       <div className="stat-label">{label}</div>
     </motion.div>
   );

@@ -52,9 +52,63 @@ body::before {
 }
 
 .page {
+  position: relative;
   max-width: 880px;
   margin: 0 auto;
   padding: 20px;
+}
+
+/* ---- ambient aurora: slow drifting glow blobs behind the content ---- */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.aurora-blob {
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  filter: blur(110px);
+  opacity: 0.16;
+  will-change: transform;
+}
+.aurora-a {
+  background: var(--accent);
+  top: -180px;
+  left: -120px;
+  animation: aurora-drift-a 26s ease-in-out infinite alternate;
+}
+.aurora-b {
+  background: #7b4dff;
+  top: 30%;
+  right: -200px;
+  opacity: 0.1;
+  animation: aurora-drift-b 32s ease-in-out infinite alternate;
+}
+.aurora-c {
+  background: var(--accent-2);
+  bottom: -220px;
+  left: 30%;
+  opacity: 0.09;
+  animation: aurora-drift-c 38s ease-in-out infinite alternate;
+}
+@keyframes aurora-drift-a {
+  to {
+    transform: translate(140px, 90px) scale(1.15);
+  }
+}
+@keyframes aurora-drift-b {
+  to {
+    transform: translate(-120px, -80px) scale(1.1);
+  }
+}
+@keyframes aurora-drift-c {
+  to {
+    transform: translate(-90px, -120px) scale(1.2);
+  }
 }
 
 /* top bar */
@@ -132,10 +186,21 @@ body::before {
 /* hero */
 .hero h1 {
   font-size: clamp(30px, 6.4vw, 56px);
-  line-height: 1.02;
+  line-height: 1.06;
   letter-spacing: -0.045em;
   font-weight: 700;
   margin: 10px 0 14px;
+  background: linear-gradient(
+    100deg,
+    var(--text) 0%,
+    var(--text) 55%,
+    var(--accent-2) 85%,
+    var(--accent) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--text); /* fallback when clip unsupported */
 }
 .sub {
   color: var(--muted);
@@ -169,6 +234,24 @@ code {
   font-size: 0.9em;
 }
 
+/* crash fallback card (ErrorBoundary) */
+.crash-card {
+  margin: 40px auto;
+  max-width: 460px;
+  padding: 32px;
+  text-align: center;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+.crash-card h2 {
+  margin: 0 0 8px;
+}
+.crash-card .muted {
+  color: var(--muted);
+  margin: 0 0 18px;
+}
+
 /* play card */
 .play-card {
   margin: 28px 0;
@@ -190,6 +273,16 @@ code {
   cursor: pointer;
   box-shadow: 0 10px 30px rgba(252, 100, 50, 0.35);
   transition: transform 0.06s ease, box-shadow 0.2s ease;
+  animation: play-glow 2.6s ease-in-out infinite;
+}
+@keyframes play-glow {
+  0%,
+  100% {
+    box-shadow: 0 10px 30px rgba(252, 100, 50, 0.3);
+  }
+  50% {
+    box-shadow: 0 12px 44px rgba(252, 100, 50, 0.55);
+  }
 }
 .play-btn:hover {
   box-shadow: 0 14px 40px rgba(252, 100, 50, 0.45);
@@ -1042,6 +1135,8 @@ code {
   margin: 24px 0 4px;
 }
 .home-card {
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
   gap: 14px;
@@ -1052,10 +1147,34 @@ code {
   padding: 14px 16px;
   cursor: pointer;
   color: var(--text);
-  transition: border-color 0.15s ease;
+  transition:
+    border-color 0.2s var(--ease-out),
+    box-shadow 0.2s var(--ease-out);
+}
+/* light sweep across the card on hover */
+.home-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -80%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent,
+    rgba(255, 255, 255, 0.06),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: left 0.55s var(--ease-out);
+  pointer-events: none;
+}
+.home-card:hover::after {
+  left: 130%;
 }
 .home-card:hover {
   border-color: rgba(252, 100, 50, 0.45);
+  box-shadow: 0 10px 34px rgba(252, 100, 50, 0.12);
 }
 .home-card-you {
   border-color: rgba(61, 220, 151, 0.5);
