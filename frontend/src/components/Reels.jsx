@@ -7,11 +7,13 @@ import {
   getRecentSpins,
 } from "../stacks";
 import { readableError, short } from "./util";
-import { ChampionBanner, FeedList, Hero, ShareButton, StatTile, TxHint } from "./shared.jsx";
+import { ChampionBanner, FeedList, Hero, HowTo, ShareButton, StatTile, TxHint } from "./shared.jsx";
+import Icon from "./Icon.jsx";
 
-const SYM = ["🍒", "🍋", "🔔", "⭐", "💎", "7️⃣"];
+// Reel symbols map to names in the custom Icon set.
+const SYM = ["cherry", "seven", "bell", "star", "gem", "bar"];
 const TIER_LABEL = { 0: "no win", 1: "pair!", 2: "JACKPOT!" };
-const sym = (i) => SYM[i] ?? "❔";
+const sym = (i) => SYM[i] ?? null;
 
 export default function Reels({ address, onConnect }) {
   const [stats, setStats] = useState(null);
@@ -80,6 +82,14 @@ export default function Reels({ address, onConnect }) {
         icon="reels"
         title="Lucky Reels"
         sub="Pull once — the contract draws three symbols from on-chain entropy. Any pair wins and extends your streak; three-of-a-kind is a jackpot. One spin, one transaction, no house edge."
+      />
+
+      <HowTo
+        steps={[
+          "Tap Spin — the contract draws three symbols from the Bitcoin block.",
+          "Any matching pair wins and extends your streak.",
+          "Three-of-a-kind lands a jackpot.",
+        ]}
       />
 
       <ChampionBanner
@@ -156,7 +166,7 @@ export default function Reels({ address, onConnect }) {
             <span className="mono">{short(s.player)}</span>
             <span className="reels-row">
               {s.reels.map((r, i) => (
-                <span key={i}>{sym(r)}</span>
+                <Icon key={i} name={sym(r)} size={18} />
               ))}
             </span>
             <span className={`muted ${s.tier > 0 ? "strong" : ""}`}>
@@ -178,7 +188,11 @@ function Reel({ spinning, face, index }) {
     return () => clearInterval(t);
   }, [spinning, index]);
 
-  const shown = spinning ? sym((tick + index) % SYM.length) : face != null ? sym(face) : "❔";
+  const shown = spinning
+    ? SYM[(tick + index) % SYM.length]
+    : face != null
+      ? SYM[face]
+      : null;
   return (
     <motion.div
       className="reel"
@@ -189,7 +203,9 @@ function Reel({ spinning, face, index }) {
           : { duration: 0.5, ease: "easeOut" }
       }
     >
-      <span className="reel-face">{shown}</span>
+      <span className="reel-face">
+        {shown ? <Icon name={shown} size={44} strokeWidth={1.6} /> : "?"}
+      </span>
     </motion.div>
   );
 }

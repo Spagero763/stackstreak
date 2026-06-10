@@ -1119,6 +1119,87 @@ code {
   }
 }
 
+/* how-to-play panel */
+.howto-game {
+  margin: 10px 0 6px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  overflow: hidden;
+}
+.howto-game summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  list-style: none;
+  user-select: none;
+}
+.howto-game summary::-webkit-details-marker {
+  display: none;
+}
+.howto-game summary .icon {
+  color: var(--accent);
+}
+.howto-game[open] summary {
+  color: var(--text);
+  border-bottom: 1px solid var(--line);
+}
+.howto-game-steps {
+  margin: 0;
+  padding: 12px 16px 2px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.5;
+}
+.howto-game-note {
+  margin: 6px 16px 14px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+/* icon + label inside a button */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+
+/* RPS placeholder + feed icons */
+.rps-q {
+  font-size: 56px;
+  font-weight: 800;
+  color: var(--muted);
+}
+.rps-feed-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent-2);
+}
+
+/* reels: symbols now render as brand icons on the cream reel */
+.reel-face {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #b9610c;
+}
+.reels-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent-2);
+}
+
 /* footer */
 .footer {
   margin: 36px 0 16px;

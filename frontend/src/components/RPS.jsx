@@ -11,12 +11,14 @@ import {
   ChampionBanner,
   FeedList,
   Hero,
+  HowTo,
   ShareButton,
   StatTile,
   TxHint,
 } from "./shared.jsx";
+import Icon from "./Icon.jsx";
 
-const HAND = ["✊", "📄", "✌️"];
+const HAND = ["rock", "paper", "scissors"];
 const NAME = ["Rock", "Paper", "Scissors"];
 const OUTCOME = ["Draw", "You won", "You lost"];
 const OUTCOME_CLASS = ["result-draw", "result-win", "result-lose"];
@@ -93,6 +95,14 @@ export default function RPS({ address, onConnect }) {
         sub="Play against the contract. It picks its move from on-chain entropy and scores the round. Every play is one transaction."
       />
 
+      <HowTo
+        steps={[
+          "Choose Rock, Paper, or Scissors.",
+          "The contract picks its move from on-chain entropy.",
+          "Beat it to grow your win streak.",
+        ]}
+      />
+
       <ChampionBanner
         label="holds the longest win streak"
         address={top?.player}
@@ -129,11 +139,11 @@ export default function RPS({ address, onConnect }) {
           {[0, 1, 2].map((id) => (
             <button
               key={id}
-              className="btn big"
+              className="btn big btn-icon"
               disabled={busy}
               onClick={() => call(id)}
             >
-              {HAND[id]} {NAME[id]}
+              <Icon name={HAND[id]} size={20} strokeWidth={2} /> {NAME[id]}
             </button>
           ))}
         </div>
@@ -167,8 +177,9 @@ export default function RPS({ address, onConnect }) {
         renderRow={(r) => (
           <>
             <span className="mono">{short(r.player)}</span>
-            <span>
-              {HAND[r.move]} vs {HAND[r.house]}
+            <span className="rps-feed-row">
+              <Icon name={HAND[r.move]} size={16} /> vs{" "}
+              <Icon name={HAND[r.house]} size={16} />
             </span>
             <span className={`muted ${r.outcome === 1 ? "strong" : ""}`}>
               {r.outcome === 0 ? "draw" : r.outcome === 1 ? "won" : "lost"}
@@ -181,7 +192,7 @@ export default function RPS({ address, onConnect }) {
 }
 
 function Hand({ label, move, animate }) {
-  const display = animate ? "❓" : move != null ? HAND[move] : "❓";
+  const showIcon = !animate && move != null;
   return (
     <div>
       <motion.div
@@ -197,7 +208,11 @@ function Hand({ label, move, animate }) {
             : { type: "spring", stiffness: 320, damping: 18 }
         }
       >
-        {display}
+        {showIcon ? (
+          <Icon name={HAND[move]} size={62} strokeWidth={1.6} />
+        ) : (
+          <span className="rps-q">?</span>
+        )}
       </motion.div>
       <div className="rps-label">{label}</div>
     </div>

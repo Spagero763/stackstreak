@@ -12,6 +12,7 @@ import {
   ChampionBanner,
   FeedList,
   Hero,
+  HowTo,
   ShareButton,
   StatTile,
   TxHint,
@@ -70,6 +71,14 @@ export default function HiLo({ address, onConnect }) {
         icon="hilo"
         title="Higher or Lower"
         sub="A number from 1–100 is revealed. Call whether the next is higher or lower. Chain correct calls to grow your run — one miss ends it."
+      />
+
+      <HowTo
+        steps={[
+          "Start a run to reveal a number from 1–100.",
+          "Call whether the next number is higher or lower.",
+          "Chain correct calls to extend your run — one miss ends it.",
+        ]}
       />
 
       <ChampionBanner
