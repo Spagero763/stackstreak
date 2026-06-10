@@ -23,6 +23,7 @@ import HiLo from "./components/HiLo.jsx";
 import ConnectFour from "./components/ConnectFour.jsx";
 import Reels from "./components/Reels.jsx";
 import Icon from "./components/Icon.jsx";
+import ErrorBoundary from "./components/ErrorBoundary.jsx";
 
 const short = (a) => (a ? `${a.slice(0, 5)}…${a.slice(-4)}` : "");
 
@@ -64,6 +65,13 @@ export default function App() {
 
   return (
     <div className="page">
+      {/* Ambient aurora — slow drifting glow blobs behind everything */}
+      <div className="aurora" aria-hidden>
+        <span className="aurora-blob aurora-a" />
+        <span className="aurora-blob aurora-b" />
+        <span className="aurora-blob aurora-c" />
+      </div>
+
       <header className="topbar">
         <div className="brand">
           <motion.img
@@ -121,11 +129,13 @@ export default function App() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
           >
-            <Active
-              address={address}
-              onConnect={onConnect}
-              onNavigate={setView}
-            />
+            <ErrorBoundary resetKey={active.id}>
+              <Active
+                address={address}
+                onConnect={onConnect}
+                onNavigate={setView}
+              />
+            </ErrorBoundary>
           </motion.div>
         </AnimatePresence>
       </main>
