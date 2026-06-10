@@ -11,7 +11,7 @@ import {
   TTT_STATUS as STATUS,
 } from "../stacks";
 import { readableError, short } from "./util";
-import { FeedList, Hero, TxHint } from "./shared.jsx";
+import { FeedList, Hero, HowTo, TxHint } from "./shared.jsx";
 
 const ROWS = [5, 4, 3, 2, 1, 0]; // render top-to-bottom
 const COLS = [0, 1, 2, 3, 4, 5, 6];
@@ -80,6 +80,14 @@ export default function ConnectFour({ address, onConnect }) {
         icon="c4"
         title="Connect Four"
         sub="Open a game or join one, then drop discs into columns. First to line up four in any direction wins. Every move is a transaction."
+      />
+
+      <HowTo
+        steps={[
+          "Create a game, or join an open one.",
+          "Drop discs into columns, alternating turns with your opponent.",
+          "Connect four in any direction to win.",
+        ]}
       />
 
       {error && <div className="banner error">{error}</div>}

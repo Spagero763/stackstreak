@@ -155,6 +155,27 @@ export function ShareButton({ text, label = "𝕏  Share" }) {
   );
 }
 
+/* ------------ How to play (collapsible) ------------ */
+// A compact, scannable rules panel so a first-time player knows exactly what
+// to do — and that every move is one on-chain transaction. Collapsed by
+// default to stay out of the way for returning players.
+export function HowTo({ steps, note = "Each move is a single Stacks transaction — you'll confirm it in your wallet." }) {
+  return (
+    <details className="howto-game">
+      <summary>
+        <Icon name="hilo" size={15} strokeWidth={2} />
+        How to play
+      </summary>
+      <ol className="howto-game-steps">
+        {steps.map((s, i) => (
+          <li key={i}>{s}</li>
+        ))}
+      </ol>
+      <p className="howto-game-note">{note}</p>
+    </details>
+  );
+}
+
 /* ------------ Empty / loading skeleton block ------------ */
 export function Skeleton({ rows = 3 }) {
   return (

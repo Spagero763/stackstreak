@@ -10,7 +10,7 @@ import {
   TTT_STATUS,
 } from "../stacks";
 import { readableError, short } from "./util";
-import { Hero, TxHint } from "./shared.jsx";
+import { Hero, HowTo, TxHint } from "./shared.jsx";
 
 const MARK = ["", "✕", "◯"];
 
@@ -90,6 +90,14 @@ export default function TicTacToe({ address, onConnect }) {
         icon="ttt"
         title="On-chain Tic-Tac-Toe"
         sub="Open a game or join an opponent. Every move is a transaction the contract validates — turns, wins and draws, all on Stacks."
+      />
+
+      <HowTo
+        steps={[
+          "Create a game, or join an open one from the list.",
+          "Take turns placing your mark — the contract validates every move.",
+          "Line up three in a row to win.",
+        ]}
       />
 
       {error && <div className="banner error">{error}</div>}

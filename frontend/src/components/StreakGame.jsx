@@ -14,6 +14,7 @@ import {
   ChampionBanner,
   FeedList,
   Hero,
+  HowTo,
   StatTile,
   TxHint,
 } from "./shared.jsx";
@@ -94,6 +95,14 @@ export default function StreakGame({ address, onConnect }) {
         icon="streak"
         title="Play once. Build your streak. Climb the chain."
         sub="A provably-fair daily game. Every tap is a single transaction — your score is rolled by the contract from the current Bitcoin block, so nobody can fake it."
+      />
+
+      <HowTo
+        steps={[
+          "Tap Play — the contract rolls you a score from 1–100 using the live Bitcoin block.",
+          "Play on consecutive days to grow your streak.",
+          "Climb the leaderboard by total score.",
+        ]}
       />
 
       <ChampionBanner

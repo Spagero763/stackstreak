@@ -11,6 +11,7 @@ import {
   ChampionBanner,
   FeedList,
   Hero,
+  HowTo,
   ShareButton,
   StatTile,
   TxHint,
@@ -86,6 +87,14 @@ export default function CoinFlip({ address, onConnect }) {
         icon="coinflip"
         title="Coin Flip"
         sub="Call it. The contract flips using on-chain entropy — get it right to build a streak. Every flip is one transaction."
+      />
+
+      <HowTo
+        steps={[
+          "Call Heads or Tails.",
+          "The contract flips using on-chain entropy from the live Bitcoin block.",
+          "Match the result to extend your streak — one miss resets it.",
+        ]}
       />
 
       <ChampionBanner
