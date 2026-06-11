@@ -18,6 +18,9 @@ npm install stackstreak-sdk
 Ships with **full TypeScript declarations** — autocomplete and type-checking
 work out of the box, no `@types` package needed.
 
+Runnable scripts live in [`examples/`](https://github.com/Spagero763/stackstreak/tree/main/examples)
+— a leaderboard reader, a quest-status checker, and a signed coin flip.
+
 ## Read example
 
 ```js
