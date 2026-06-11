@@ -1238,6 +1238,33 @@ code {
   }
 }
 
+/* daily quest progress pips */
+.quest-track {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  padding: 14px 0 6px;
+}
+.quest-pip {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  background: var(--panel-2);
+  transition: all 0.25s var(--ease-out);
+}
+.quest-pip-done {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 4px 16px rgba(252, 100, 50, 0.4);
+}
+.quest-status {
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  margin: 8px 0 16px;
+}
+
 /* how-to-play panel */
 .howto-game {
   margin: 10px 0 6px;

@@ -1,0 +1,18 @@
+---
+id: 0
+name: Publish quests only (other contracts already live)
+network: mainnet
+stacks-node: "https://api.hiro.so"
+bitcoin-node: "http://blockstack:blockstacksystem@bitcoin.blockstack.com:8332"
+plan:
+  batches:
+    - id: 0
+      transactions:
+        - contract-publish:
+            contract-name: quests
+            expected-sender: SP3JKFGFTQZSDYDRA4JSV0HST1D610WMR1G7K367T
+            cost: 60000
+            path: "contracts/quests.clar"
+            anchor-block-only: true
+            clarity-version: 3
+      epoch: "3.2"

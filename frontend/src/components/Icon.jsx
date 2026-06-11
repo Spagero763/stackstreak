@@ -58,6 +58,18 @@ const P = {
     />
   ),
 
+  // daily quests — a flag
+  quest: (
+    <>
+      <path d="M6 21V4" />
+      <path
+        d="M6 4c2.5-1.4 5-1.4 7.5 0S18 5.4 19 4.8V13c-1 .6-3 .6-5.5-.8S8.5 11.6 6 13V4Z"
+        fill="currentColor"
+        fillOpacity="0.25"
+      />
+    </>
+  ),
+
   /* ---- RPS gameplay gestures ---- */
   rock: (
     <path

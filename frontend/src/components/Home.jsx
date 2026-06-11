@@ -16,6 +16,7 @@ import {
   getRecentC4,
   getReelsTop,
   getRecentSpins,
+  getQuestTop,
 } from "../stacks";
 import { short } from "./util";
 import { Hero, StatTile, FeedList, usePoll } from "./shared.jsx";
@@ -31,6 +32,7 @@ const GAME_CARDS = [
   { id: "hilo", icon: "hilo", name: "Higher / Lower", blurb: "Extend your run" },
   { id: "c4", icon: "c4", name: "Connect Four", blurb: "PvP, 4-in-a-row" },
   { id: "reels", icon: "reels", name: "Lucky Reels", blurb: "Spin for a jackpot" },
+  { id: "quests", icon: "quest", name: "Daily Quest", blurb: "Play 3, claim, streak" },
 ];
 
 // RPS outcome codes mirror the contract: 0 draw, 1 win, 2 loss.
@@ -76,12 +78,13 @@ export default function Home({ address, onConnect, onNavigate }) {
       getRecentC4(8),
       getReelsTop(),
       getRecentSpins(8),
+      getQuestTop(),
     ]);
     const [
       streakTop, coinTop, rpsTop, hiloTop,
       totalPlays, players, tttCount, c4Count,
       rPlays, rFlips, rRps, rHilo, rC4,
-      reelsTop, rSpins,
+      reelsTop, rSpins, questTop,
     ] = results;
 
     const tttN = settled(tttCount, 0);
@@ -93,6 +96,7 @@ export default function Home({ address, onConnect, onNavigate }) {
       rps: champ(settled(rpsTop, null), (t) => `${t.streak} streak`),
       hilo: champ(settled(hiloTop, null), (t) => `run ${t.run}`),
       reels: champ(settled(reelsTop, null), (t) => `${t.jackpots} jackpots`),
+      quests: champ(settled(questTop, null), (t) => `${t.completed} quests`),
       ttt: { sub: `${tttN} game${tttN === 1 ? "" : "s"}` },
       c4: { sub: `${c4N} game${c4N === 1 ? "" : "s"}` },
     });

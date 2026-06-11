@@ -84,6 +84,12 @@ Writes (need STACKS_PRIVATE_KEY = a wallet YOU control):
   reels-top                 most jackpots
   reels-feed                recent spins
   spin                      spin the Lucky Reels (write)
+  quest-progress [address]  today's quest progress
+  quest-stats [address]     lifetime quest record
+  quest-top                 most quests completed
+  quest-feed                recent check-ins and claims
+  quest-checkin             start today's quest (write)
+  quest-claim               claim today's quest (write)
 
 Env: STACKS_NETWORK (default mainnet), STACKS_PRIVATE_KEY (writes only)`);
 }
@@ -347,6 +353,45 @@ async function main() {
       }
       case "spin": {
         const txid = await sdk.reelsSpin(needKey());
+        console.log("submitted:", explorer(txid));
+        break;
+      }
+
+      // ---- Daily Quests ----
+      case "quest-progress": {
+        const a = args[0] || myAddress();
+        console.log(a);
+        console.log(await sdk.getQuestProgress(a));
+        break;
+      }
+      case "quest-stats": {
+        const a = args[0] || myAddress();
+        console.log(a);
+        console.log(await sdk.getQuestStats(a));
+        break;
+      }
+      case "quest-top":
+        console.log(await sdk.getQuestTop());
+        break;
+      case "quest-feed": {
+        const feed = await sdk.getRecentQuests(15);
+        feed.forEach((q) =>
+          console.log(
+            q.event === "claim"
+              ? `${q.player}  claimed (${q.completed} total, streak ${q.streak})`
+              : `${q.player}  checked in`,
+          ),
+        );
+        if (!feed.length) console.log("No quests yet.");
+        break;
+      }
+      case "quest-checkin": {
+        const txid = await sdk.questCheckIn(needKey());
+        console.log("submitted:", explorer(txid));
+        break;
+      }
+      case "quest-claim": {
+        const txid = await sdk.questClaim(needKey());
         console.log("submitted:", explorer(txid));
         break;
       }

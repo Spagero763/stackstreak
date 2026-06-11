@@ -23,6 +23,7 @@ export const RPS_CONTRACT_NAME = "rps";
 export const HILO_CONTRACT_NAME = "hilo";
 export const C4_CONTRACT_NAME = "connectfour";
 export const REELS_CONTRACT_NAME = "reels";
+export const QUESTS_CONTRACT_NAME = "quests";
 
 export const TTT_STATUS = {
   OPEN: 0,
@@ -353,6 +354,48 @@ export function createClient(opts = {}) {
         txId: v.txId,
       }));
 
+  // ---- Daily Quests ----
+  const questCheckIn = (senderKey) =>
+    write(QUESTS_CONTRACT_NAME, "check-in", [], senderKey);
+  const questClaim = (senderKey) =>
+    write(QUESTS_CONTRACT_NAME, "claim", [], senderKey);
+  const getQuestProgress = async (address) => {
+    const t = await read(QUESTS_CONTRACT_NAME, "get-progress", [
+      Cl.principal(address),
+    ]);
+    return {
+      active: bool(t.active),
+      claimed: bool(t.claimed),
+      done: num(t.done),
+      goal: num(t.goal),
+      day: num(t.day),
+    };
+  };
+  const getQuestStats = async (address) => {
+    const t = await read(QUESTS_CONTRACT_NAME, "get-quest-stats", [
+      Cl.principal(address),
+    ]);
+    return {
+      completed: num(t.completed),
+      streak: num(t.streak),
+      bestStreak: num(t["best-streak"]),
+      lastDay: num(t["last-day"]),
+    };
+  };
+  const getQuestTop = async () => {
+    const t = await read(QUESTS_CONTRACT_NAME, "get-top", []);
+    return { player: addr(t.player), completed: num(t.completed) };
+  };
+  const getRecentQuests = async (limit = 15) =>
+    (await getContractEvents(QUESTS_CONTRACT_NAME, limit)).map((v) => ({
+      event: val(v.event) ?? v.event,
+      player: addr(v.player),
+      plays: num(v.plays),
+      completed: num(v.completed),
+      streak: num(v.streak),
+      txId: v.txId,
+    }));
+
   // ---- Signed writes (legacy aliases kept for back-compat) ----
   const play = (senderKey) =>
     write(STREAK_CONTRACT_NAME, "play", [], senderKey);
@@ -411,6 +454,13 @@ export function createClient(opts = {}) {
     getReelsStats,
     getReelsTop,
     getRecentSpins,
+    // daily quests
+    questCheckIn,
+    questClaim,
+    getQuestProgress,
+    getQuestStats,
+    getQuestTop,
+    getRecentQuests,
     // generic
     getContractEvents,
   };
