@@ -7,7 +7,7 @@ import {
   getRecentSpins,
 } from "../stacks";
 import { readableError, short } from "./util";
-import { ChampionBanner, FeedList, Hero, HowTo, ShareButton, StatTile, TxHint } from "./shared.jsx";
+import { ChampionBanner, FeedList, Hero, HowTo, ShareButton, StatTile, TxHint, usePoll } from "./shared.jsx";
 import Icon from "./Icon.jsx";
 
 // Reel symbols map to names in the custom Icon set.
@@ -42,10 +42,7 @@ export default function Reels({ address, onConnect }) {
   useEffect(() => {
     refresh();
   }, [refresh]);
-  useEffect(() => {
-    const t = setInterval(refresh, 15000);
-    return () => clearInterval(t);
-  }, [refresh]);
+  usePoll(refresh);
 
   // Reveal the just-confirmed spin once it lands in the feed.
   useEffect(() => {

@@ -18,7 +18,7 @@ import {
   getRecentSpins,
 } from "../stacks";
 import { short } from "./util";
-import { Hero, StatTile, FeedList } from "./shared.jsx";
+import { Hero, StatTile, FeedList, usePoll } from "./shared.jsx";
 import Icon from "./Icon.jsx";
 
 // One card per game on the hub. `icon` is a name in the custom Icon set; `id`
@@ -143,10 +143,7 @@ export default function Home({ address, onConnect, onNavigate }) {
   }, []);
 
   useEffect(() => { refresh(); }, [refresh]);
-  useEffect(() => {
-    const t = setInterval(refresh, 20000);
-    return () => clearInterval(t);
-  }, [refresh]);
+  usePoll(refresh, 60000);
 
   return (
     <>

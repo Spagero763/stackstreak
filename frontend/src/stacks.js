@@ -54,6 +54,53 @@ export function disconnectWallet() {
   disconnect();
 }
 
+/* --- request layer: cache + dedupe + 429 backoff -------------------------
+   The Hiro API rate-limits unauthenticated bursts (confirmed: ~20 parallel
+   calls already trips 429, which the browser surfaces as "Failed to fetch").
+   Every read in the app funnels through here so one page load can't stampede
+   the API: identical calls within the TTL share one cached result, identical
+   in-flight calls share one promise, and 429s retry with backoff.
+   Set VITE_HIRO_API_KEY (free at platform.hiro.so) to raise the limit. */
+const HIRO_API_KEY = import.meta.env.VITE_HIRO_API_KEY || "";
+const CACHE_TTL = 30_000;
+const cache = new Map(); // key -> { t, v }
+const inflight = new Map(); // key -> promise
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function fetchWithRetry(url, opts = {}, tries = 3) {
+  const headers = {
+    ...(opts.headers || {}),
+    ...(HIRO_API_KEY ? { "x-api-key": HIRO_API_KEY } : {}),
+  };
+  let res;
+  for (let i = 0; i < tries; i++) {
+    res = await fetch(url, { ...opts, headers });
+    if (res.status !== 429) return res;
+    // exponential backoff with jitter before retrying a rate-limited call
+    await sleep(600 * 2 ** i + Math.random() * 400);
+  }
+  return res;
+}
+
+// BigInt-safe serializer for cache keys built from clarity values.
+const keyOf = (parts) =>
+  JSON.stringify(parts, (_, v) => (typeof v === "bigint" ? v.toString() : v));
+
+async function cached(key, fn) {
+  const hit = cache.get(key);
+  if (hit && Date.now() - hit.t < CACHE_TTL) return hit.v;
+  if (inflight.has(key)) return inflight.get(key);
+  const p = fn()
+    .then((v) => {
+      cache.set(key, { t: Date.now(), v });
+      return v;
+    })
+    .finally(() => inflight.delete(key));
+  inflight.set(key, p);
+  return p;
+}
+
 // --- generic contract helpers (work for any contract from the same deployer) ---
 async function callContract(contractName, functionName, functionArgs = []) {
   const res = await request("stx_callContract", {
@@ -66,15 +113,18 @@ async function callContract(contractName, functionName, functionArgs = []) {
 }
 
 async function readOnly(contractName, functionName, functionArgs = []) {
-  const cv = await fetchCallReadOnlyFunction({
-    contractAddress: CONTRACT_ADDRESS,
-    contractName,
-    functionName,
-    functionArgs,
-    senderAddress: CONTRACT_ADDRESS,
-    network: NETWORK,
+  return cached(keyOf(["ro", contractName, functionName, functionArgs]), async () => {
+    const cv = await fetchCallReadOnlyFunction({
+      contractAddress: CONTRACT_ADDRESS,
+      contractName,
+      functionName,
+      functionArgs,
+      senderAddress: CONTRACT_ADDRESS,
+      network: NETWORK,
+      client: { fetch: fetchWithRetry },
+    });
+    return cvToValue(cv, true);
   });
-  return cvToValue(cv, true);
 }
 
 const asList = (x) =>
@@ -116,14 +166,21 @@ export async function getTop() {
   return { player: addr(t.player), score: num(t.score) };
 }
 
+// One cached fetch for a contract's raw event page — shared by every feed.
+async function fetchContractEvents(contractName, limit) {
+  const id = `${CONTRACT_ADDRESS}.${contractName}`;
+  return cached(keyOf(["ev", contractName, limit]), async () => {
+    const res = await fetchWithRetry(
+      `${API_BASE}/extended/v1/contract/${id}/events?limit=${limit}&offset=0`,
+    );
+    if (!res.ok) throw new Error(`events ${res.status}`);
+    return res.json();
+  });
+}
+
 // Live activity feed, decoded from the contract's `print` events.
 export async function getRecentPlays(limit = 15) {
-  const id = `${CONTRACT_ADDRESS}.${CONTRACT_NAME}`;
-  const res = await fetch(
-    `${API_BASE}/extended/v1/contract/${id}/events?limit=${limit}&offset=0`,
-  );
-  if (!res.ok) throw new Error(`events ${res.status}`);
-  const data = await res.json();
+  const data = await fetchContractEvents(CONTRACT_NAME, limit);
   const out = [];
   for (const ev of data.results || []) {
     const hex = ev?.contract_log?.value?.hex;
@@ -227,12 +284,7 @@ export async function getRecentGames(limit = 12) {
 // Pulls decoded `print` events from any of our contracts, newest-first.
 // Each game then shapes the raw tuple into something its UI can render.
 async function getEventTuples(contractName, limit = 20) {
-  const id = `${CONTRACT_ADDRESS}.${contractName}`;
-  const res = await fetch(
-    `${API_BASE}/extended/v1/contract/${id}/events?limit=${limit}&offset=0`,
-  );
-  if (!res.ok) throw new Error(`events ${res.status}`);
-  const data = await res.json();
+  const data = await fetchContractEvents(contractName, limit);
   const out = [];
   for (const ev of data.results || []) {
     const hex = ev?.contract_log?.value?.hex;

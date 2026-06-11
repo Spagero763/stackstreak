@@ -10,7 +10,7 @@ import {
   TTT_STATUS,
 } from "../stacks";
 import { readableError, short } from "./util";
-import { Hero, HowTo, TxHint } from "./shared.jsx";
+import { Hero, HowTo, TxHint, usePoll } from "./shared.jsx";
 
 const MARK = ["", "✕", "◯"];
 
@@ -54,10 +54,7 @@ export default function TicTacToe({ address, onConnect }) {
   useEffect(() => {
     refresh();
   }, [refresh]);
-  useEffect(() => {
-    const t = setInterval(refresh, 15000);
-    return () => clearInterval(t);
-  }, [refresh]);
+  usePoll(refresh);
 
   const withTx = async (fn) => {
     if (!address) return onConnect();

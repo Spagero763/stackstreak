@@ -15,6 +15,7 @@ import {
   ShareButton,
   StatTile,
   TxHint,
+  usePoll,
 } from "./shared.jsx";
 
 const FACE = { 0: "H", 1: "T" };
@@ -49,10 +50,7 @@ export default function CoinFlip({ address, onConnect }) {
   useEffect(() => {
     refresh();
   }, [refresh]);
-  useEffect(() => {
-    const t = setInterval(refresh, 15000);
-    return () => clearInterval(t);
-  }, [refresh]);
+  usePoll(refresh);
 
   // When a flip we submitted shows up in the feed, animate the reveal.
   useEffect(() => {
