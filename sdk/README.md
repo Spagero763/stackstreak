@@ -3,8 +3,8 @@
 JavaScript SDK + CLI for the [StackStreak](https://github.com/Spagero763/stackstreak)
 on-chain game hub on [Stacks](https://www.stacks.co/) (Bitcoin L2).
 
-**Seven games**, one client:
-Daily Streak · Tic-Tac-Toe · Coin Flip · Rock-Paper-Scissors · Higher-or-Lower · Connect Four · Lucky Reels.
+**Seven games + Daily Quests**, one client:
+Daily Streak · Tic-Tac-Toe · Coin Flip · Rock-Paper-Scissors · Higher-or-Lower · Connect Four · Lucky Reels · Daily Quests.
 
 Reads run anywhere (browser or Node). Signed write helpers require a private
 key, so use them only with a wallet **you** control (a CLI or backend you run).
@@ -103,6 +103,12 @@ The CLI prints an explorer link for every submitted transaction.
 - `getReelsStats(address)` → `{ spins, wins, jackpots, streak, bestStreak }`
 - `getReelsTop()` — most jackpots · `getRecentSpins(limit)` — decoded spin events
 - `reelsSpin(senderKey)` — one spin, returns three symbols (`0..5`)
+
+**Daily Quests**
+- `getQuestProgress(address)` → `{ active, claimed, done, goal, day }` (live, contract-verified)
+- `getQuestStats(address)` → `{ completed, streak, bestStreak, lastDay }`
+- `getQuestTop()` — most quests completed · `getRecentQuests(limit)` — check-ins & claims
+- `questCheckIn(senderKey)` · `questClaim(senderKey)` — start / claim today's quest
 
 **Constants:** `TTT_STATUS` and `C4_STATUS` map status codes (`OPEN`, `ACTIVE`, `X_WON`, `O_WON`, `DRAW`).
 

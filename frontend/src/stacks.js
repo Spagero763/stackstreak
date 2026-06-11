@@ -23,6 +23,7 @@ import {
   HILO_CONTRACT_NAME,
   C4_CONTRACT_NAME,
   REELS_CONTRACT_NAME,
+  QUESTS_CONTRACT_NAME,
   API_BASE,
 } from "./config";
 
@@ -487,4 +488,50 @@ export async function getRecentSpins(limit = 15) {
       streak: num(v.streak),
       txId: v.txId,
     }));
+}
+
+/* ===================== Daily Quests ===================== */
+
+export async function questCheckIn() {
+  return callContract(QUESTS_CONTRACT_NAME, "check-in", []);
+}
+export async function questClaim() {
+  return callContract(QUESTS_CONTRACT_NAME, "claim", []);
+}
+export async function getQuestProgress(address) {
+  const t = await readOnly(QUESTS_CONTRACT_NAME, "get-progress", [
+    Cl.principal(address),
+  ]);
+  return {
+    active: bool(t.active),
+    claimed: bool(t.claimed),
+    done: num(t.done),
+    goal: num(t.goal),
+    day: num(t.day),
+  };
+}
+export async function getQuestStats(address) {
+  const t = await readOnly(QUESTS_CONTRACT_NAME, "get-quest-stats", [
+    Cl.principal(address),
+  ]);
+  return {
+    completed: num(t.completed),
+    streak: num(t.streak),
+    bestStreak: num(t["best-streak"]),
+    lastDay: num(t["last-day"]),
+  };
+}
+export async function getQuestTop() {
+  const t = await readOnly(QUESTS_CONTRACT_NAME, "get-top", []);
+  return { player: addr(t.player), completed: num(t.completed) };
+}
+export async function getRecentQuests(limit = 15) {
+  return (await getEventTuples(QUESTS_CONTRACT_NAME, limit)).map((v) => ({
+    event: evName(v),
+    player: addr(v.player),
+    plays: num(v.plays),
+    completed: num(v.completed),
+    streak: num(v.streak),
+    txId: v.txId,
+  }));
 }

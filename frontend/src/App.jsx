@@ -22,6 +22,7 @@ import RPS from "./components/RPS.jsx";
 import HiLo from "./components/HiLo.jsx";
 import ConnectFour from "./components/ConnectFour.jsx";
 import Reels from "./components/Reels.jsx";
+import Quests from "./components/Quests.jsx";
 import Icon from "./components/Icon.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 
@@ -29,6 +30,7 @@ const short = (a) => (a ? `${a.slice(0, 5)}…${a.slice(-4)}` : "");
 
 const GAMES = [
   { id: "home", name: "Home", icon: "home", Component: Home },
+  { id: "quests", name: "Daily Quest", icon: "quest", Component: Quests },
   { id: "streak", name: "Daily Streak", icon: "streak", Component: StreakGame },
   { id: "ttt", name: "Tic-Tac-Toe", icon: "ttt", Component: TicTacToe },
   { id: "coinflip", name: "Coin Flip", icon: "coinflip", Component: CoinFlip },

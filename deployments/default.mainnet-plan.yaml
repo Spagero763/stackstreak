@@ -50,4 +50,11 @@ plan:
             path: "contracts/reels.clar"
             anchor-block-only: true
             clarity-version: 3
+        - contract-publish:
+            contract-name: quests
+            expected-sender: SP3JKFGFTQZSDYDRA4JSV0HST1D610WMR1G7K367T
+            cost: 60000
+            path: "contracts/quests.clar"
+            anchor-block-only: true
+            clarity-version: 3
       epoch: "3.2"

@@ -1,7 +1,7 @@
 {
   "name": "stackstreak-sdk",
-  "version": "0.3.0",
-  "description": "JavaScript SDK for the StackStreak family of on-chain games on Stacks (Bitcoin L2): Daily Streak, Tic-Tac-Toe, Coin Flip, RPS, Higher-or-Lower, Connect Four, Lucky Reels.",
+  "version": "0.4.0",
+  "description": "JavaScript SDK for the StackStreak family of on-chain games on Stacks (Bitcoin L2): Daily Streak, Tic-Tac-Toe, Coin Flip, RPS, Higher-or-Lower, Connect Four, Lucky Reels, Daily Quests.",
   "type": "module",
   "main": "src/index.js",
   "module": "src/index.js",
