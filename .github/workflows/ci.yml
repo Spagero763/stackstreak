@@ -46,6 +46,6 @@ jobs:
           cache-dependency-path: sdk/package-lock.json
       - working-directory: sdk
         run: npm ci
-      # Smoke-check the SDK imports and exposes its client API.
+      # API-surface tests + tsc typecheck of the shipped declarations.
       - working-directory: sdk
-        run: node -e "import('./src/index.js').then(m => { const c = m.createClient(); if (typeof c.reelsSpin !== 'function') process.exit(1); console.log('SDK ok'); })"
+        run: npm test

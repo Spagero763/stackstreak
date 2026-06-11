@@ -15,6 +15,9 @@ key, so use them only with a wallet **you** control (a CLI or backend you run).
 npm install stackstreak-sdk
 ```
 
+Ships with **full TypeScript declarations** — autocomplete and type-checking
+work out of the box, no `@types` package needed.
+
 ## Read example
 
 ```js

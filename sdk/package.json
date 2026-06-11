@@ -1,12 +1,20 @@
 {
   "name": "stackstreak-sdk",
-  "version": "0.4.0",
-  "description": "JavaScript SDK for the StackStreak family of on-chain games on Stacks (Bitcoin L2): Daily Streak, Tic-Tac-Toe, Coin Flip, RPS, Higher-or-Lower, Connect Four, Lucky Reels, Daily Quests.",
+  "version": "0.5.0",
+  "description": "TypeScript-ready SDK for the StackStreak family of on-chain games on Stacks (Bitcoin L2): Daily Streak, Tic-Tac-Toe, Coin Flip, RPS, Higher-or-Lower, Connect Four, Lucky Reels, Daily Quests.",
   "type": "module",
   "main": "src/index.js",
   "module": "src/index.js",
+  "types": "src/index.d.ts",
   "exports": {
-    ".": "./src/index.js"
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    }
+  },
+  "scripts": {
+    "test": "vitest run && npm run typecheck",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "bin": {
     "stackstreak": "bin/cli.mjs"
@@ -38,5 +46,9 @@
   "dependencies": {
     "@stacks/network": "^7.3.1",
     "@stacks/transactions": "^7.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "vitest": "^3.2.4"
   }
 }
