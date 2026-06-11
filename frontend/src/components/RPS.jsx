@@ -15,6 +15,7 @@ import {
   ShareButton,
   StatTile,
   TxHint,
+  usePoll,
 } from "./shared.jsx";
 import Icon from "./Icon.jsx";
 
@@ -51,10 +52,7 @@ export default function RPS({ address, onConnect }) {
   useEffect(() => {
     refresh();
   }, [refresh]);
-  useEffect(() => {
-    const t = setInterval(refresh, 15000);
-    return () => clearInterval(t);
-  }, [refresh]);
+  usePoll(refresh);
 
   useEffect(() => {
     if (!lastTxRef.current) return;

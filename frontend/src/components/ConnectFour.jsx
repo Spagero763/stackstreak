@@ -11,7 +11,7 @@ import {
   TTT_STATUS as STATUS,
 } from "../stacks";
 import { readableError, short } from "./util";
-import { FeedList, Hero, HowTo, TxHint } from "./shared.jsx";
+import { FeedList, Hero, HowTo, TxHint, usePoll } from "./shared.jsx";
 
 const ROWS = [5, 4, 3, 2, 1, 0]; // render top-to-bottom
 const COLS = [0, 1, 2, 3, 4, 5, 6];
@@ -49,10 +49,7 @@ export default function ConnectFour({ address, onConnect }) {
   useEffect(() => {
     refresh();
   }, [refresh]);
-  useEffect(() => {
-    const t = setInterval(refresh, 15000);
-    return () => clearInterval(t);
-  }, [refresh]);
+  usePoll(refresh);
 
   const withTx = async (fn) => {
     if (!address) return onConnect();

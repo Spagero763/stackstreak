@@ -17,6 +17,7 @@ import {
   HowTo,
   StatTile,
   TxHint,
+  usePoll,
 } from "./shared.jsx";
 
 export default function StreakGame({ address, onConnect }) {
@@ -59,10 +60,7 @@ export default function StreakGame({ address, onConnect }) {
   useEffect(() => {
     refresh();
   }, [refresh]);
-  useEffect(() => {
-    const t = setInterval(refresh, 20000);
-    return () => clearInterval(t);
-  }, [refresh]);
+  usePoll(refresh);
 
   useEffect(() => {
     if (!lastTxRef.current) return;

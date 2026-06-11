@@ -9,6 +9,26 @@ import Icon from "./Icon.jsx";
 
 const EASE = [0.16, 1, 0.3, 1];
 
+// Poll a refresh function on an interval, but only while the tab is visible —
+// hidden tabs stop hitting the API entirely and refresh once on return.
+// Keeping the cadence gentle matters: the Hiro API rate-limits bursts.
+export function usePoll(fn, ms = 45000) {
+  useEffect(() => {
+    const tick = () => {
+      if (!document.hidden) fn();
+    };
+    const t = setInterval(tick, ms);
+    const onVis = () => {
+      if (!document.hidden) fn();
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      clearInterval(t);
+      document.removeEventListener("visibilitychange", onVis);
+    };
+  }, [fn, ms]);
+}
+
 // Numbers tick up to their value instead of popping in — makes live on-chain
 // stats feel alive. Non-numeric values render as-is.
 function CountUp({ value }) {

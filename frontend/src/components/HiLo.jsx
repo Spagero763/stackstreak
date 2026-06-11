@@ -16,6 +16,7 @@ import {
   ShareButton,
   StatTile,
   TxHint,
+  usePoll,
 } from "./shared.jsx";
 
 export default function HiLo({ address, onConnect }) {
@@ -43,10 +44,7 @@ export default function HiLo({ address, onConnect }) {
   useEffect(() => {
     refresh();
   }, [refresh]);
-  useEffect(() => {
-    const t = setInterval(refresh, 15000);
-    return () => clearInterval(t);
-  }, [refresh]);
+  usePoll(refresh);
 
   const run = async (fn) => {
     if (!address) return onConnect();
