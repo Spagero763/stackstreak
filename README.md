@@ -26,6 +26,7 @@ transaction.**
 | `contracts/quests.clar` | Daily Quests: `check-in` snapshots your play counters across every game, `claim` verifies you made 3+ plays today — completion is contract-verified, never self-reported. |
 | `frontend/` | React + Vite multi-game app using `@stacks/connect` + `@stacks/transactions`. |
 | `sdk/` | [`stackstreak-sdk`](sdk/README.md) — npm package (reads + signed writes) and a `stackstreak` CLI. |
+| `examples/` | [Runnable scripts](examples/README.md) built on the SDK: leaderboard, quest status, signed coin flip. |
 
 ### The roll is provably fair
 Each play hashes a tuple of `{ your address, burn-block-height, stacks-block-height, your play number }`

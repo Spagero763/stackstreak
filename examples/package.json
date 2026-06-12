@@ -1,0 +1,14 @@
+{
+  "name": "stackstreak-examples",
+  "private": true,
+  "type": "module",
+  "description": "Copy-paste examples for the stackstreak-sdk npm package.",
+  "scripts": {
+    "leaderboard": "node leaderboard.mjs",
+    "quest-status": "node quest-status.mjs",
+    "play-coinflip": "node play-coinflip.mjs"
+  },
+  "dependencies": {
+    "stackstreak-sdk": "^0.4.0"
+  }
+}
