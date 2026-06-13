@@ -12,11 +12,13 @@ import {
 } from "../stacks";
 import { readableError, short } from "./util";
 import { FeedList, Hero, HowTo, TxHint, usePoll } from "./shared.jsx";
+import { useToast } from "./toast.jsx";
 
 const ROWS = [5, 4, 3, 2, 1, 0]; // render top-to-bottom
 const COLS = [0, 1, 2, 3, 4, 5, 6];
 
 export default function ConnectFour({ address, onConnect }) {
+  const { txToast } = useToast();
   const [games, setGames] = useState([]);
   const [feed, setFeed] = useState([]);
   const [activeId, setActiveId] = useState(null);
@@ -56,7 +58,9 @@ export default function ConnectFour({ address, onConnect }) {
     setError(null);
     setBusy(true);
     try {
-      setLastTx(await fn());
+      const tx = await fn();
+      setLastTx(tx);
+      txToast(tx, "Connect Four");
       setTimeout(refresh, 11000);
     } catch (e) {
       setError(readableError(e, "Connect Four"));

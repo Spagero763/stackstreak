@@ -19,8 +19,10 @@ import {
   TxHint,
   usePoll,
 } from "./shared.jsx";
+import { useToast } from "./toast.jsx";
 
 export default function StreakGame({ address, onConnect }) {
+  const { txToast } = useToast();
   const [stats, setStats] = useState(null);
   const [top, setTop] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
@@ -78,6 +80,7 @@ export default function StreakGame({ address, onConnect }) {
     try {
       const txid = await play();
       setLastTx(txid);
+      txToast(txid, "Daily roll");
       lastTxRef.current = txid;
       setTimeout(refresh, 11000);
     } catch (e) {

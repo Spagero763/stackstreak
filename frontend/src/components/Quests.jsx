@@ -19,8 +19,10 @@ import {
   TxHint,
   usePoll,
 } from "./shared.jsx";
+import { useToast } from "./toast.jsx";
 
 export default function Quests({ address, onConnect, onNavigate }) {
+  const { txToast } = useToast();
   const [progress, setProgress] = useState(null);
   const [stats, setStats] = useState(null);
   const [top, setTop] = useState(null);
@@ -60,7 +62,9 @@ export default function Quests({ address, onConnect, onNavigate }) {
     setError(null);
     setBusy(true);
     try {
-      setLastTx(await fn());
+      const tx = await fn();
+      setLastTx(tx);
+      txToast(tx, "Quest");
       setTimeout(refresh, 11000);
     } catch (e) {
       setError(readableError(e, "Daily Quests"));

@@ -17,6 +17,7 @@ import {
   TxHint,
   usePoll,
 } from "./shared.jsx";
+import { useToast } from "./toast.jsx";
 import Icon from "./Icon.jsx";
 
 const HAND = ["rock", "paper", "scissors"];
@@ -25,6 +26,7 @@ const OUTCOME = ["Draw", "You won", "You lost"];
 const OUTCOME_CLASS = ["result-draw", "result-win", "result-lose"];
 
 export default function RPS({ address, onConnect }) {
+  const { txToast } = useToast();
   const [stats, setStats] = useState(null);
   const [top, setTop] = useState(null);
   const [feed, setFeed] = useState([]);
@@ -72,6 +74,7 @@ export default function RPS({ address, onConnect }) {
     try {
       const tx = await rpsPlay(move);
       setLastTx(tx);
+      txToast(tx, "RPS round");
       lastTxRef.current = tx;
       setTimeout(refresh, 11000);
     } catch (e) {

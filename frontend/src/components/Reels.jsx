@@ -9,6 +9,7 @@ import {
 import { readableError, short } from "./util";
 import { ChampionBanner, FeedList, Hero, HowTo, ShareButton, StatTile, TxHint, usePoll } from "./shared.jsx";
 import Icon from "./Icon.jsx";
+import { useToast } from "./toast.jsx";
 
 // Reel symbols map to names in the custom Icon set.
 const SYM = ["cherry", "seven", "bell", "star", "gem", "bar"];
@@ -16,6 +17,7 @@ const TIER_LABEL = { 0: "no win", 1: "pair!", 2: "JACKPOT!" };
 const sym = (i) => SYM[i] ?? null;
 
 export default function Reels({ address, onConnect }) {
+  const { txToast } = useToast();
   const [stats, setStats] = useState(null);
   const [top, setTop] = useState(null);
   const [feed, setFeed] = useState([]);
@@ -62,6 +64,7 @@ export default function Reels({ address, onConnect }) {
     try {
       const tx = await reelsSpin();
       setLastTx(tx);
+      txToast(tx, "Reel spin");
       lastTxRef.current = tx;
       setTimeout(refresh, 11000);
     } catch (e) {

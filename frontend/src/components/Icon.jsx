@@ -58,6 +58,16 @@ const P = {
     />
   ),
 
+  // status glyphs (toasts)
+  check: <path d="M5 12.5 10 17 19 7" />,
+  x: <path d="M6 6l12 12M18 6 6 18" />,
+  info: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 11v5M12 7.5h.01" />
+    </>
+  ),
+
   // daily quests — a flag
   quest: (
     <>

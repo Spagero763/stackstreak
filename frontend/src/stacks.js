@@ -102,6 +102,31 @@ async function cached(key, fn) {
   return p;
 }
 
+// Poll a transaction until it lands. Resolves "success" | "failed" | "dropped"
+// | "timeout". Uses the same rate-limit-aware fetcher as everything else.
+export async function waitForTx(txid, { tries = 40, intervalMs = 6000 } = {}) {
+  const id = txid.replace(/^0x/, "");
+  for (let i = 0; i < tries; i++) {
+    await sleep(intervalMs);
+    try {
+      const res = await fetchWithRetry(`${API_BASE}/extended/v1/tx/0x${id}`);
+      if (res.status === 404) continue; // not in the mempool/index yet
+      if (!res.ok) continue;
+      const data = await res.json();
+      const s = data.tx_status;
+      if (s === "success") return "success";
+      if (s === "abort_by_response" || s === "abort_by_post_condition")
+        return "failed";
+      if (s === "dropped_replace_by_fee" || /dropped/.test(s || ""))
+        return "dropped";
+      // "pending" — keep waiting
+    } catch {
+      // transient — keep waiting
+    }
+  }
+  return "timeout";
+}
+
 // --- generic contract helpers (work for any contract from the same deployer) ---
 async function callContract(contractName, functionName, functionArgs = []) {
   const res = await request("stx_callContract", {
