@@ -18,8 +18,10 @@ import {
   TxHint,
   usePoll,
 } from "./shared.jsx";
+import { useToast } from "./toast.jsx";
 
 export default function HiLo({ address, onConnect }) {
+  const { txToast } = useToast();
   const [state, setState] = useState(null);
   const [top, setTop] = useState(null);
   const [feed, setFeed] = useState([]);
@@ -51,7 +53,9 @@ export default function HiLo({ address, onConnect }) {
     setError(null);
     setBusy(true);
     try {
-      setLastTx(await fn());
+      const tx = await fn();
+      setLastTx(tx);
+      txToast(tx, "Higher/Lower");
       setTimeout(refresh, 11000);
     } catch (e) {
       setError(readableError(e, "Higher or Lower"));

@@ -17,11 +17,13 @@ import {
   TxHint,
   usePoll,
 } from "./shared.jsx";
+import { useToast } from "./toast.jsx";
 
 const FACE = { 0: "H", 1: "T" };
 const LABEL = { 0: "Heads", 1: "Tails" };
 
 export default function CoinFlip({ address, onConnect }) {
+  const { txToast } = useToast();
   const [stats, setStats] = useState(null);
   const [top, setTop] = useState(null);
   const [feed, setFeed] = useState([]);
@@ -70,6 +72,7 @@ export default function CoinFlip({ address, onConnect }) {
     try {
       const tx = await coinFlip(guess);
       setLastTx(tx);
+      txToast(tx, "Coin flip");
       lastTxRef.current = tx;
       setTimeout(refresh, 11000);
     } catch (e) {

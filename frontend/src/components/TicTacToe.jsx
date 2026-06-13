@@ -11,6 +11,7 @@ import {
 } from "../stacks";
 import { readableError, short } from "./util";
 import { Hero, HowTo, TxHint, usePoll } from "./shared.jsx";
+import { useToast } from "./toast.jsx";
 
 const MARK = ["", "✕", "◯"];
 
@@ -27,6 +28,7 @@ const LINES = [
 ];
 
 export default function TicTacToe({ address, onConnect }) {
+  const { txToast } = useToast();
   const [games, setGames] = useState([]);
   const [activeId, setActiveId] = useState(null);
   const [game, setGame] = useState(null);
@@ -61,7 +63,9 @@ export default function TicTacToe({ address, onConnect }) {
     setError(null);
     setBusy(true);
     try {
-      setLastTx(await fn());
+      const tx = await fn();
+      setLastTx(tx);
+      txToast(tx, "Tic-Tac-Toe");
       setTimeout(refresh, 11000);
     } catch (e) {
       setError(readableError(e, "Tic-Tac-Toe"));
