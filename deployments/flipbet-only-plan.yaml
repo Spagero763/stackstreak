@@ -1,0 +1,18 @@
+---
+id: 0
+name: Publish flipbet only (other contracts already live)
+network: mainnet
+stacks-node: "https://api.hiro.so"
+bitcoin-node: "http://blockstack:blockstacksystem@bitcoin.blockstack.com:8332"
+plan:
+  batches:
+    - id: 0
+      transactions:
+        - contract-publish:
+            contract-name: flipbet
+            expected-sender: SP3JKFGFTQZSDYDRA4JSV0HST1D610WMR1G7K367T
+            cost: 45000
+            path: "contracts/flipbet.clar"
+            anchor-block-only: true
+            clarity-version: 3
+      epoch: "3.2"

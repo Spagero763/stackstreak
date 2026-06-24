@@ -24,6 +24,7 @@ transaction.**
 | `contracts/connectfour.clar` | PvP Connect Four (7×6): `create-game`, `join-game`, `drop`, 4-in-a-row detection. |
 | `contracts/reels.clar` | Solo Lucky Reels: `spin` draws three symbols from on-chain entropy — pair wins, three-of-a-kind is a jackpot. |
 | `contracts/quests.clar` | Daily Quests: `check-in` snapshots your play counters across every game, `claim` verifies you made 3+ plays today — completion is contract-verified, never self-reported. |
+| `contracts/flipbet.clar` | FlipBet: stake STX on a provably-fair coin flip; a correct call pays 2× straight to your wallet, a wrong call leaves the stake in the pot. Zero house edge — the pot is break-even in expectation. |
 | `frontend/` | React + Vite multi-game app using `@stacks/connect` + `@stacks/transactions`. |
 | `sdk/` | [`stackstreak-sdk`](sdk/README.md) — npm package (reads + signed writes) and a `stackstreak` CLI. |
 | `examples/` | [Runnable scripts](examples/README.md) built on the SDK: leaderboard, quest status, signed coin flip. |

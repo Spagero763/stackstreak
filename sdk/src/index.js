@@ -24,6 +24,7 @@ export const HILO_CONTRACT_NAME = "hilo";
 export const C4_CONTRACT_NAME = "connectfour";
 export const REELS_CONTRACT_NAME = "reels";
 export const QUESTS_CONTRACT_NAME = "quests";
+export const FLIPBET_CONTRACT_NAME = "flipbet";
 
 export const TTT_STATUS = {
   OPEN: 0,
@@ -396,6 +397,46 @@ export function createClient(opts = {}) {
       txId: v.txId,
     }));
 
+  // ---- FlipBet (real-STX coin flip vs the house pot) ----
+  const betFlip = (guess, senderKey) =>
+    write(FLIPBET_CONTRACT_NAME, "bet", [Cl.uint(guess)], senderKey);
+  const fundPot = (amount, senderKey) =>
+    write(FLIPBET_CONTRACT_NAME, "fund", [Cl.uint(amount)], senderKey);
+  const getBetWager = async () =>
+    num(await read(FLIPBET_CONTRACT_NAME, "get-wager", []));
+  const getBetPot = async () =>
+    num(await read(FLIPBET_CONTRACT_NAME, "get-pot", []));
+  const getBetStats = async (address) => {
+    const t = await read(FLIPBET_CONTRACT_NAME, "get-stats", [
+      Cl.principal(address),
+    ]);
+    return {
+      bets: num(t.bets),
+      wins: num(t.wins),
+      losses: num(t.losses),
+      staked: num(t.staked),
+      won: num(t.won),
+      streak: num(t.streak),
+      bestStreak: num(t["best-streak"]),
+    };
+  };
+  const getBetTop = async () => {
+    const t = await read(FLIPBET_CONTRACT_NAME, "get-top", []);
+    return { player: addr(t.player), wins: num(t.wins) };
+  };
+  const getRecentBets = async (limit = 15) =>
+    (await getContractEvents(FLIPBET_CONTRACT_NAME, limit))
+      .filter((v) => (val(v.event) ?? v.event) === "bet")
+      .map((v) => ({
+        player: addr(v.player),
+        guess: num(v.guess),
+        result: num(v.result),
+        won: bool(v.won),
+        payout: num(v.payout),
+        streak: num(v.streak),
+        txId: v.txId,
+      }));
+
   // ---- Signed writes (legacy aliases kept for back-compat) ----
   const play = (senderKey) =>
     write(STREAK_CONTRACT_NAME, "play", [], senderKey);
@@ -461,6 +502,14 @@ export function createClient(opts = {}) {
     getQuestStats,
     getQuestTop,
     getRecentQuests,
+    // flipbet
+    betFlip,
+    fundPot,
+    getBetWager,
+    getBetPot,
+    getBetStats,
+    getBetTop,
+    getRecentBets,
     // generic
     getContractEvents,
   };
