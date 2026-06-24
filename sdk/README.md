@@ -116,6 +116,13 @@ The CLI prints an explorer link for every submitted transaction.
 - `getQuestTop()` — most quests completed · `getRecentQuests(limit)` — check-ins & claims
 - `questCheckIn(senderKey)` · `questClaim(senderKey)` — start / claim today's quest
 
+**FlipBet** (real-STX coin flip, zero house edge)
+- `getBetWager()` — stake size in microSTX · `getBetPot()` — current prize pool
+- `getBetStats(address)` → `{ bets, wins, losses, staked, won, streak, bestStreak }`
+- `getBetTop()` — most wins · `getRecentBets(limit)` — decoded bet events
+- `betFlip(guess, senderKey)` — stake & call (`0` heads / `1` tails); a win pays 2×
+- `fundPot(amount, senderKey)` — seed the pot (owner)
+
 **Constants:** `TTT_STATUS` and `C4_STATUS` map status codes (`OPEN`, `ACTIVE`, `X_WON`, `O_WON`, `DRAW`).
 
 ## License

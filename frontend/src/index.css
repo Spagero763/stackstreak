@@ -1238,6 +1238,57 @@ code {
   }
 }
 
+/* flip-to-win pot banner */
+.pot-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin: 18px 0 4px;
+  padding: 16px;
+  border-radius: 16px;
+  background: linear-gradient(
+    180deg,
+    rgba(252, 100, 50, 0.12),
+    rgba(252, 100, 50, 0.03)
+  );
+  border: 1px solid rgba(252, 100, 50, 0.3);
+}
+.pot-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.pot-value {
+  font-size: clamp(26px, 6vw, 38px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--accent-2);
+}
+.owner-panel {
+  margin-top: 14px;
+}
+.owner-panel .btn {
+  margin: 4px 16px 14px;
+}
+
+/* back link from a deep game to the hub */
+.back-link {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 0 14px;
+}
+.back-link:hover {
+  color: var(--accent-2);
+}
+
 /* daily quest progress pips */
 .quest-track {
   display: flex;

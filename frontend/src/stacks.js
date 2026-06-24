@@ -12,6 +12,7 @@ import {
   cvToValue,
   hexToCV,
   Cl,
+  Pc,
 } from "@stacks/transactions";
 import {
   NETWORK,
@@ -24,6 +25,8 @@ import {
   C4_CONTRACT_NAME,
   REELS_CONTRACT_NAME,
   QUESTS_CONTRACT_NAME,
+  FLIPBET_CONTRACT_NAME,
+  BET_WAGER,
   API_BASE,
 } from "./config";
 
@@ -128,12 +131,13 @@ export async function waitForTx(txid, { tries = 40, intervalMs = 6000 } = {}) {
 }
 
 // --- generic contract helpers (work for any contract from the same deployer) ---
-async function callContract(contractName, functionName, functionArgs = []) {
+async function callContract(contractName, functionName, functionArgs = [], extra = {}) {
   const res = await request("stx_callContract", {
     contract: `${CONTRACT_ADDRESS}.${contractName}`,
     functionName,
     functionArgs,
     network: NETWORK,
+    ...extra,
   });
   return res.txid ?? res.txId ?? res;
 }
@@ -559,4 +563,71 @@ export async function getRecentQuests(limit = 15) {
     streak: num(v.streak),
     txId: v.txId,
   }));
+}
+
+/* ===================== FlipBet (real-STX coin flip) ===================== */
+
+export const WAGER_USTX = BET_WAGER;
+
+// Place a real-STX bet. Post-conditions make the wallet show exactly what
+// moves: the player stakes WAGER, and the contract pays out at most 2×WAGER
+// (0 on a loss, 2×WAGER on a win). Denied mode aborts on anything else.
+export async function betFlip(guess) {
+  const me = getStxAddress();
+  const contractId = `${CONTRACT_ADDRESS}.${FLIPBET_CONTRACT_NAME}`;
+  const postConditions = [
+    Pc.principal(me).willSendEq(BET_WAGER).ustx(),
+    Pc.principal(contractId).willSendLte(2 * BET_WAGER).ustx(),
+  ];
+  return callContract(FLIPBET_CONTRACT_NAME, "bet", [Cl.uint(guess)], {
+    postConditions,
+    postConditionMode: "deny",
+  });
+}
+
+// Seed the pot (owner). Player sends exactly `amount` µSTX to the contract.
+export async function fundPot(amount) {
+  const me = getStxAddress();
+  return callContract(FLIPBET_CONTRACT_NAME, "fund", [Cl.uint(amount)], {
+    postConditions: [Pc.principal(me).willSendEq(amount).ustx()],
+    postConditionMode: "deny",
+  });
+}
+
+export async function getBetStats(address) {
+  const t = await readOnly(FLIPBET_CONTRACT_NAME, "get-stats", [
+    Cl.principal(address),
+  ]);
+  return {
+    bets: num(t.bets),
+    wins: num(t.wins),
+    losses: num(t.losses),
+    staked: num(t.staked),
+    won: num(t.won),
+    streak: num(t.streak),
+    bestStreak: num(t["best-streak"]),
+  };
+}
+
+export async function getBetPot() {
+  return num(await readOnly(FLIPBET_CONTRACT_NAME, "get-pot", []));
+}
+
+export async function getBetTop() {
+  const t = await readOnly(FLIPBET_CONTRACT_NAME, "get-top", []);
+  return { player: addr(t.player), wins: num(t.wins) };
+}
+
+export async function getRecentBets(limit = 15) {
+  return (await getEventTuples(FLIPBET_CONTRACT_NAME, limit))
+    .filter((v) => evName(v) === "bet")
+    .map((v) => ({
+      player: addr(v.player),
+      guess: num(v.guess),
+      result: num(v.result),
+      won: bool(v.won),
+      payout: num(v.payout),
+      streak: num(v.streak),
+      txId: v.txId,
+    }));
 }

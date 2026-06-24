@@ -34,6 +34,8 @@ const READS = [
   "getReelsStats", "getReelsTop", "getRecentSpins",
   // quests
   "getQuestProgress", "getQuestStats", "getQuestTop", "getRecentQuests",
+  // flipbet
+  "getBetWager", "getBetPot", "getBetStats", "getBetTop", "getRecentBets",
   // generic
   "getContractEvents",
 ];
@@ -46,6 +48,7 @@ const WRITES = [
   "c4Create", "c4Join", "c4Drop",
   "reelsSpin",
   "questCheckIn", "questClaim",
+  "betFlip", "fundPot",
 ];
 
 describe("exports", () => {

@@ -12,6 +12,7 @@ export declare const HILO_CONTRACT_NAME: "hilo";
 export declare const C4_CONTRACT_NAME: "connectfour";
 export declare const REELS_CONTRACT_NAME: "reels";
 export declare const QUESTS_CONTRACT_NAME: "quests";
+export declare const FLIPBET_CONTRACT_NAME: "flipbet";
 
 /** Game status codes shared by Tic-Tac-Toe and Connect Four. */
 export interface GameStatus {
@@ -186,12 +187,37 @@ export interface QuestEvent {
   txId: string;
 }
 
+export interface BetStats {
+  bets: number;
+  wins: number;
+  losses: number;
+  /** lifetime microSTX staked */
+  staked: number;
+  /** lifetime microSTX paid out to this player */
+  won: number;
+  streak: number;
+  bestStreak: number;
+}
+
+export interface BetEvent {
+  player: string;
+  /** 0 = heads, 1 = tails. */
+  guess: number;
+  result: number;
+  won: boolean;
+  /** microSTX paid out (0 on a loss). */
+  payout: number;
+  streak: number;
+  txId: string;
+}
+
 export type StreakTop = { player: string | null; score: number };
 export type CoinTop = { player: string | null; streak: number };
 export type RpsTop = { player: string | null; streak: number };
 export type HiloTop = { player: string | null; run: number };
 export type ReelsTop = { player: string | null; jackpots: number };
 export type QuestTop = { player: string | null; completed: number };
+export type BetTop = { player: string | null; wins: number };
 
 /** A decoded contract `print` event tuple plus its transaction id. */
 export type RawEvent = Record<string, unknown> & { txId: string };
@@ -260,6 +286,15 @@ export interface StackStreakClient {
   getQuestStats(address: string): Promise<QuestStats>;
   getQuestTop(): Promise<QuestTop>;
   getRecentQuests(limit?: number): Promise<QuestEvent[]>;
+
+  /* FlipBet — real-STX coin flip vs the house pot */
+  betFlip(guess: 0 | 1, senderKey: string): Promise<string>;
+  fundPot(amount: number, senderKey: string): Promise<string>;
+  getBetWager(): Promise<number>;
+  getBetPot(): Promise<number>;
+  getBetStats(address: string): Promise<BetStats>;
+  getBetTop(): Promise<BetTop>;
+  getRecentBets(limit?: number): Promise<BetEvent[]>;
 
   /* Generic */
   getContractEvents(contractName: string, limit?: number): Promise<RawEvent[]>;

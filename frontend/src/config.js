@@ -16,6 +16,9 @@ export const HILO_CONTRACT_NAME = "hilo";
 export const C4_CONTRACT_NAME = "connectfour";
 export const REELS_CONTRACT_NAME = "reels";
 export const QUESTS_CONTRACT_NAME = "quests";
+export const FLIPBET_CONTRACT_NAME = "flipbet";
+// Must match the WAGER constant in contracts/flipbet.clar (microSTX).
+export const BET_WAGER = 1000;
 
 // Hiro API base for the configured network.
 export const API_BASE =

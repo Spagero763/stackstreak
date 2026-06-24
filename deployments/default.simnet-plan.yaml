@@ -16,8 +16,52 @@ genesis:
       address: ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5
       balance: "100000000000000"
       sbtc-balance: "1000000000"
+    - name: wallet_10
+      address: STZX1MHJD4BCPK5YE5K9WH0P0X0EZ3GHDQJ2E451
+      balance: "100000000000000"
+      sbtc-balance: "1000000000"
+    - name: wallet_11
+      address: ST3F2MA92407MGCWX72KA7885XV876K8JD0B36M2N
+      balance: "100000000000000"
+      sbtc-balance: "1000000000"
+    - name: wallet_12
+      address: ST29PE6YKGA5FEA885538PK44WREQK68JX7FTAKHH
+      balance: "100000000000000"
+      sbtc-balance: "1000000000"
+    - name: wallet_13
+      address: ST2ER7XGWVTMHNRZDB8PTC97FN7KH7H2BB95ESA8X
+      balance: "100000000000000"
+      sbtc-balance: "1000000000"
+    - name: wallet_14
+      address: ST1ETJC36N2ZBVG5MKWHT0Y39B36X48952CC8X10B
+      balance: "100000000000000"
+      sbtc-balance: "1000000000"
+    - name: wallet_15
+      address: ST5FFFEQ5YSBM68WS6EY032B1T7G6BNKVVHMKTYR
+      balance: "100000000000000"
+      sbtc-balance: "1000000000"
+    - name: wallet_16
+      address: ST2BQR6VGF01PVS5AM6V3D4DJH9WRE0FD8C21FE2B
+      balance: "100000000000000"
+      sbtc-balance: "1000000000"
+    - name: wallet_17
+      address: ST2F1JDY9N716EEJRJDS8S90RRRN6HV0WYD1YPC9B
+      balance: "100000000000000"
+      sbtc-balance: "1000000000"
+    - name: wallet_18
+      address: ST1A0REWQCP0MJ1Z58RDFQVZXGZ55T1C2DRJ44X2T
+      balance: "100000000000000"
+      sbtc-balance: "1000000000"
+    - name: wallet_19
+      address: ST2BP0AR7716SPDS77TTYQQ37CB5YQPBRG975GSYZ
+      balance: "100000000000000"
+      sbtc-balance: "1000000000"
     - name: wallet_2
       address: ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG
+      balance: "100000000000000"
+      sbtc-balance: "1000000000"
+    - name: wallet_20
+      address: ST2C1WD0RV3JK16JWYZCK5ZS3XGP1K711V1CZKPAK
       balance: "100000000000000"
       sbtc-balance: "1000000000"
     - name: wallet_3
@@ -42,6 +86,10 @@ genesis:
       sbtc-balance: "1000000000"
     - name: wallet_8
       address: ST3NBRSFKX28FQ2ZJ1MAKX58HKHSDGNV5N7R21XCP
+      balance: "100000000000000"
+      sbtc-balance: "1000000000"
+    - name: wallet_9
+      address: ST3499G7EZFVY2ZEGE3BQAVVT4E8VF6VV14Z82F59
       balance: "100000000000000"
       sbtc-balance: "1000000000"
   contracts:
@@ -72,6 +120,11 @@ plan:
             contract-name: connectfour
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             path: contracts/connectfour.clar
+            clarity-version: 3
+        - emulated-contract-publish:
+            contract-name: flipbet
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/flipbet.clar
             clarity-version: 3
         - emulated-contract-publish:
             contract-name: hilo

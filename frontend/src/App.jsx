@@ -23,26 +23,32 @@ import HiLo from "./components/HiLo.jsx";
 import ConnectFour from "./components/ConnectFour.jsx";
 import Reels from "./components/Reels.jsx";
 import Quests from "./components/Quests.jsx";
+import FlipBet from "./components/FlipBet.jsx";
 import Icon from "./components/Icon.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 
 const short = (a) => (a ? `${a.slice(0, 5)}…${a.slice(-4)}` : "");
 
-const GAMES = [
-  { id: "home", name: "Home", icon: "home", Component: Home },
-  { id: "quests", name: "Daily Quest", icon: "quest", Component: Quests },
-  { id: "streak", name: "Daily Streak", icon: "streak", Component: StreakGame },
-  { id: "ttt", name: "Tic-Tac-Toe", icon: "ttt", Component: TicTacToe },
-  { id: "coinflip", name: "Coin Flip", icon: "coinflip", Component: CoinFlip },
-  { id: "rps", name: "RPS", icon: "rps", Component: RPS },
-  { id: "hilo", name: "Higher / Lower", icon: "hilo", Component: HiLo },
-  { id: "c4", name: "Connect Four", icon: "c4", Component: ConnectFour },
-  { id: "reels", name: "Lucky Reels", icon: "reels", Component: Reels },
-];
+// Every view, keyed by id. The nav stays deliberately tiny — Flip to Win is the
+// front door; everything else lives under "More games" (the Home hub) so a
+// first-time visitor isn't overwhelmed.
+const VIEWS = {
+  flipbet: { name: "Flip to Win", icon: "coinflip", Component: FlipBet },
+  home: { name: "More games", icon: "home", Component: Home },
+  quests: { name: "Daily Quest", icon: "quest", Component: Quests },
+  streak: { name: "Daily Streak", icon: "streak", Component: StreakGame },
+  ttt: { name: "Tic-Tac-Toe", icon: "ttt", Component: TicTacToe },
+  coinflip: { name: "Coin Flip", icon: "coinflip", Component: CoinFlip },
+  rps: { name: "RPS", icon: "rps", Component: RPS },
+  hilo: { name: "Higher / Lower", icon: "hilo", Component: HiLo },
+  c4: { name: "Connect Four", icon: "c4", Component: ConnectFour },
+  reels: { name: "Lucky Reels", icon: "reels", Component: Reels },
+};
+const TABS = ["flipbet", "home"];
 
 export default function App() {
   const [address, setAddress] = useState(null);
-  const [view, setView] = useState("home");
+  const [view, setView] = useState("flipbet");
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -62,8 +68,9 @@ export default function App() {
     setAddress(null);
   };
 
-  const active = GAMES.find((g) => g.id === view) || GAMES[0];
+  const active = VIEWS[view] || VIEWS.flipbet;
   const Active = active.Component;
+  const onTab = TABS.includes(view);
 
   return (
     <div className="page">
@@ -102,17 +109,23 @@ export default function App() {
       <Marquee />
 
       <nav className="tabs">
-        {GAMES.map((g) => (
+        {TABS.map((id) => (
           <button
-            key={g.id}
-            className={`tab ${view === g.id ? "active" : ""}`}
-            onClick={() => setView(g.id)}
+            key={id}
+            className={`tab ${view === id ? "active" : ""}`}
+            onClick={() => setView(id)}
           >
-            <Icon name={g.icon} size={16} strokeWidth={2} />
-            <span>{g.name}</span>
+            <Icon name={VIEWS[id].icon} size={16} strokeWidth={2} />
+            <span>{VIEWS[id].name}</span>
           </button>
         ))}
       </nav>
+
+      {!onTab && (
+        <button className="back-link" onClick={() => setView("home")}>
+          ← All games
+        </button>
+      )}
 
       {error && <div className="banner error">{error}</div>}
       {!IS_CONFIGURED && (
@@ -125,13 +138,13 @@ export default function App() {
       <main className="main">
         <AnimatePresence mode="wait">
           <motion.div
-            key={active.id}
+            key={view}
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
           >
-            <ErrorBoundary resetKey={active.id}>
+            <ErrorBoundary resetKey={view}>
               <Active
                 address={address}
                 onConnect={onConnect}
@@ -159,12 +172,12 @@ export default function App() {
 // Scrolling ticker — a signature "this was designed" detail, à la editorial sites.
 function Marquee() {
   const items = [
+    "FLIP TO WIN REAL STX",
     "PROVABLY FAIR",
     "SETTLED ON BITCOIN",
-    "NO HOUSE",
-    "NO ADMIN KEYS",
-    "7 GAMES",
-    "ONE TX PER MOVE",
+    "NO HOUSE EDGE",
+    "INSTANT PAYOUTS",
+    "ONE TX PER FLIP",
     "OPEN SOURCE",
   ];
   const strip = (

@@ -18,3 +18,9 @@ frontend/.env
 .env
 .env.local
 .DS_Store
+
+.vercel
+
+# local agent + operational tooling (not part of the published project)
+.claude/
+scripts/
