@@ -8,7 +8,7 @@ your score, your daily streak, and your spot on the global leaderboard update
 instantly. No wagering, no house, no admin keys. **Every play is one
 transaction.**
 
-**▶ Play:** https://stackstreak-nine.vercel.app · seven on-chain games in one hub.
+**▶ Play:** https://stackstreaks.vercel.app · nine on-chain games in one hub.
 
 ---
 
